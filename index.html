@@ -3,406 +3,173 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#a8e0d7">
+
   <title>Amigo Secreto Time RCT | 2026</title>
-  
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
 
-    body {
-      background: linear-gradient(135deg, #a8e0d7 0%, #d8e2dc 50%, #f1d3b0 100%);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-      overflow-x: hidden;
-    }
+  <link rel="stylesheet" href="style.css">
 
-    .main-container {
-      width: 100%;
-      max-width: 440px;
-    }
-
-    .card {
-      background: #ffffff;
-      border-radius: 20px;
-      padding: 25px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.12);
-      text-align: center;
-      position: relative;
-    }
-
-    h1 {
-      color: #b84335;
-      font-size: 20px;
-      margin-bottom: 6px;
-    }
-
-    h2 {
-      color: #2b6777;
-      font-size: 15px;
-      margin-bottom: 20px;
-    }
-
-    label {
-      display: block;
-      text-align: left;
-      font-size: 13px;
-      font-weight: bold;
-      color: #333;
-      margin: 12px 0 4px 0;
-    }
-
-    select, input[type="password"] {
-      width: 100%;
-      padding: 12px;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      font-size: 14px;
-      margin-bottom: 10px;
-      outline: none;
-    }
-
-    button {
-      width: 100%;
-      padding: 14px;
-      margin-top: 15px;
-      border: none;
-      border-radius: 10px;
-      background-color: #52ab98;
-      color: white;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    button:hover {
-      background-color: #428b7b;
-      transform: translateY(-1px);
-    }
-
-    .btn-reset {
-      background: transparent;
-      color: #666;
-      font-size: 12px;
-      border: 1px dashed #aaa;
-      margin-top: 15px;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    /* GLOBO DO BINGO */
-    .bingo-stage {
-      position: relative;
-      width: 260px;
-      height: 280px;
-      margin: 15px auto;
-    }
-
-    .globo-container {
-      width: 200px;
-      height: 200px;
-      border-radius: 50%;
-      margin: 0 auto;
-      position: relative;
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), rgba(200,230,240,0.3));
-      border: 6px solid #b0c4de;
-      box-shadow: inset 0 0 20px rgba(255,255,255,0.8), 0 8px 25px rgba(0,0,0,0.15);
-      overflow: hidden;
-      z-index: 1;
-    }
-
-    .globo-wireframe {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      border-radius: 50%;
-      border: 2px dashed rgba(100, 120, 140, 0.4);
-      pointer-events: none;
-    }
-
-    .shaking {
-      animation: shakeGlobe 0.08s infinite alternate ease-in-out;
-    }
-
-    @keyframes shakeGlobe {
-      0% { transform: translate(-3px, 2px) rotate(-1deg); }
-      100% { transform: translate(3px, -2px) rotate(1deg); }
-    }
-
-    .tubo-saida {
-      position: absolute;
-      top: 190px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 44px;
-      height: 30px;
-      background: linear-gradient(90deg, #888, #eee, #888);
-      border-radius: 0 0 10px 10px;
-      z-index: 2;
-      border: 2px solid #666;
-    }
-
-    /* ANIMAÇÃO DA BOLINHA QUE SAI */
-    .drawn-ball {
-      position: absolute;
-      top: 100px;
-      left: 50%;
-      transform: translateX(-50%) scale(0);
-      width: 65px;
-      height: 65px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, #ff4757, #ff6b81);
-      color: white;
-      font-size: 28px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.3), inset -3px -3px 8px rgba(0,0,0,0.2);
-      z-index: 10;
-      opacity: 0;
-      transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    }
-
-    .drawn-ball.drop-out {
-      opacity: 1;
-      top: 180px;
-      transform: translateX(-50%) scale(1.8);
-    }
-
-    .drawn-ball.shake-ball {
-      animation: ballShake 0.1s infinite alternate;
-    }
-
-    @keyframes ballShake {
-      0% { transform: translateX(-50%) scale(1.8) rotate(-8deg); }
-      100% { transform: translateX(-50%) scale(1.8) rotate(8deg); }
-    }
-
-    .bingo-phrase {
-      font-size: 15px;
-      font-weight: bold;
-      color: #2b6777;
-      margin-top: 10px;
-      min-height: 24px;
-    }
-
-    .drawn-name-box {
-      background: linear-gradient(135deg, #52ab98, #2b6777);
-      color: white;
-      font-size: 26px;
-      font-weight: bold;
-      padding: 20px;
-      border-radius: 15px;
-      margin: 20px 0;
-      letter-spacing: 1.5px;
-      box-shadow: 0 8px 20px rgba(43, 103, 119, 0.3);
-      animation: popIn 0.5s ease-out;
-    }
-
-    @keyframes popIn {
-      0% { transform: scale(0.5); opacity: 0; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-  </style>
-
-  <!-- Canvas Confetti -->
+  <!-- Biblioteca de confetes -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <script defer src="app.js"></script>
 </head>
+
 <body>
 
-<!-- Elemento de áudio configurado para repetir (loop) -->
-<audio id="bg-music" loop preload="auto">
-  <source src="havaiana.mp3" type="audio/mpeg">
-</audio>
+  <!-- Música opcional -->
+  <audio id="bg-music" loop preload="auto">
+    <source src="havaiana.mp3" type="audio/mpeg">
+  </audio>
 
-  <div class="main-container">
-    
-    <!-- TELA 1: LOGIN -->
-    <div id="auth-card" class="card">
-      <h1>🌴 Amigo Secreto Time RCT | 2026</h1>
-      <h2>Acessar o Sorteio</h2>
-      
+  <main class="main-container">
+
+    <!-- TELA 1: ENTRADA -->
+    <section id="auth-card" class="card">
+
+      <div class="palm">🌴</div>
+
+      <h1>Amigo Secreto</h1>
+      <h2>TIME RCT • 2026</h2>
+
+      <p class="intro">
+        Acesse para descobrir quem você tirou!
+      </p>
+
       <label for="user-select">Quem é você?</label>
+
       <select id="user-select">
         <option value="">Selecione seu nome</option>
       </select>
 
       <label for="password-input">Palavra-passe:</label>
-      <input type="password" id="password-input" placeholder="Digite a palavra-passe">
 
-      <button onclick="entrar()">Entrar 🌊</button>
+      <input
+        type="password"
+        id="password-input"
+        placeholder="Digite a palavra-passe"
+        autocomplete="current-password"
+      >
 
-      <button onclick="reiniciarSorteio()" class="btn-reset">
+      <button
+        id="btn-enter"
+        type="button"
+        onclick="entrar()"
+      >
+        Entrar 🌊
+      </button>
+
+      <button
+        type="button"
+        onclick="reiniciarSorteio()"
+        class="btn-reset"
+      >
         ⚙ Resetar / Novo Sorteio (Organizador)
       </button>
-    </div>
 
-    <!-- TELA 2: MÁQUINA DE BINGO -->
-    <div id="wheel-card" class="card hidden">
-      <h2>Olá, <span id="user-display-name"></span>! 👋</h2>
-      <p style="font-size:13px; color:#555;">Clique abaixo para girar o globo do sorteio!</p>
+      <p class="small-note">
+        Prepare-se para a surpresa!
+      </p>
+
+    </section>
+
+
+    <!-- TELA 2: GLOBO -->
+    <section id="wheel-card" class="card hidden">
+
+      <h2 class="greeting">
+        Olá, <span id="user-display-name"></span>!
+      </h2>
+
+      <p class="subtitle">
+        Clique para girar o globo do sorteio.
+      </p>
 
       <div class="bingo-stage">
-        <div id="globo" class="globo-container">
+
+        <!-- GLOBO -->
+        <div
+          id="globo"
+          class="globo-container"
+          aria-label="Globo transparente com bolinhas coloridas"
+        >
+
           <div class="globo-wireframe"></div>
-          <canvas id="bingo-canvas" width="200" height="200"></canvas>
+
+          <canvas
+            id="bingo-canvas"
+            width="200"
+            height="200"
+          ></canvas>
+
+          <div class="globe-shine"></div>
+
         </div>
+
+        <!-- BASE E TUBULAÇÃO -->
+        <div class="globe-neck"></div>
         <div class="tubo-saida"></div>
-        
-        <div id="drawn-ball" class="drawn-ball">🎁</div>
+
+        <!-- BOLINHA QUE SAI DO GLOBO -->
+        <div
+          id="drawn-ball"
+          class="drawn-ball"
+          aria-live="polite"
+        >
+
+          <div class="ball-half ball-top"></div>
+          <div class="ball-half ball-bottom"></div>
+
+          <div
+            id="ball-name"
+            class="ball-name"
+          ></div>
+
+        </div>
+
       </div>
 
-      <div id="bingo-phrase" class="bingo-phrase">Pronto para começar?</div>
+      <div id="bingo-phrase" class="bingo-phrase">
+        Pronto para começar?
+      </div>
 
-      <button id="btn-spin" onclick="executarSorteioEAnimacao()">🎰 Sortear Amigo Secreto</button>
-    </div>
+      <button
+        id="btn-spin"
+        type="button"
+        onclick="executarSorteioEAnimacao()"
+      >
+        🎰 Sortear Amigo Secreto
+      </button>
 
-    <!-- TELA 3: REVELAÇÃO FINAL -->
-    <div id="result-card" class="card hidden">
-      <h2 style="color:#b84335;">🎉 VOCÊ TIROU:</h2>
-      <div id="drawn-name" class="drawn-name-box">---</div>
-      <p style="font-size:13px; color:#666;">🤫 Mantenha segredo até a entrega do presente!</p>
-    </div>
+    </section>
 
-  </div>
 
-  <script>
-    let bingoAnimationId = null;
-    let balls = [];
-    const colors = ['#ff7675', '#74b9ff', '#55efc4', '#ffeaa7', '#a29bfe', '#fd79a8', '#e17055', '#00b894'];
+    <!-- TELA 3: REVELAÇÃO -->
+    <section id="result-card" class="card hidden">
 
-    function initBingoCanvas() {
-      const canvas = document.getElementById('bingo-canvas');
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      balls = [];
-      
-      for (let i = 0; i < 18; i++) {
-        balls.push({
-          x: 40 + Math.random() * 120,
-          y: 40 + Math.random() * 120,
-          radius: 10,
-          color: colors[i % colors.length],
-          vx: (Math.random() - 0.5) * 3,
-          vy: (Math.random() - 0.5) * 3
-        });
-      }
+      <div class="result-confetti" aria-hidden="true">
+        🎉
+      </div>
 
-      function draw() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        balls.forEach(b => {
-          b.x += b.vx;
-          b.y += b.vy;
+      <h2 class="result-title">
+        VOCÊ TIROU:
+      </h2>
 
-          const dx = b.x - 100;
-          const dy = b.y - 100;
-          const dist = Math.sqrt(dx * dx + dy * dy);
+      <div id="drawn-name" class="drawn-name-box">
+        ---
+      </div>
 
-          if (dist + b.radius > 95) {
-            const angle = Math.atan2(dy, dx);
-            b.vx = -Math.cos(angle) * Math.abs(b.vx);
-            b.vy = -Math.sin(angle) * Math.abs(b.vy);
-          }
+      <p class="secret-tip">
+        🤫 Mantenha segredo até a entrega do presente!
+      </p>
 
-          ctx.beginPath();
-          ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
-          ctx.fillStyle = b.color;
-          ctx.fill();
-          ctx.strokeStyle = '#ffffff';
-          ctx.lineWidth = 1.5;
-          ctx.stroke();
-          ctx.closePath();
-        });
-        bingoAnimationId = requestAnimationFrame(draw);
-      }
-      if (bingoAnimationId) cancelAnimationFrame(bingoAnimationId);
-      draw();
-    }
+    </section>
 
-    function dispararConfetes() {
-      if (typeof confetti === 'function') {
-        confetti({
-          particleCount: 160,
-          spread: 80,
-          origin: { y: 0.6 }
-        });
-      }
-    }
+  </main>
 
-    function rodarSequenciaCompleta(nomeSorteado) {
-      const btn = document.getElementById('btn-spin');
-      const globo = document.getElementById('globo');
-      const phraseEl = document.getElementById('bingo-phrase');
-      const drawnBall = document.getElementById('drawn-ball');
-      const audio = document.getElementById('bg-music');
-
-      // Tocar a música ao iniciar a animação
-      if (audio) {
-        audio.currentTime = 0;
-        audio.play().catch(e => console.log("Erro ao tocar áudio:", e));
-      }
-
-      if (btn) btn.disabled = true;
-
-      if (globo) globo.classList.add('shaking');
-      balls.forEach(b => { b.vx *= 3.5; b.vy *= 3.5; });
-      phraseEl.innerText = "Agitando o globo...";
-
-      setTimeout(() => {
-        phraseEl.innerText = "A escolher a bolinha...";
-      }, 1500);
-
-      setTimeout(() => {
-        if (globo) globo.classList.remove('shaking');
-        phraseEl.innerText = "A bolinha saiu!";
-
-        drawnBall.classList.add('drop-out');
-
-        setTimeout(() => {
-          drawnBall.classList.add('shake-ball');
-          phraseEl.innerText = "A abrir a bolinha...";
-
-          setTimeout(() => {
-            drawnBall.classList.remove('shake-ball');
-            
-            document.getElementById('wheel-card').classList.add('hidden');
-            document.getElementById('result-card').classList.remove('hidden');
-            document.getElementById('drawn-name').innerText = nomeSorteado;
-            
-            dispararConfetes();
-          }, 1600);
-
-        }, 1000);
-
-      }, 3500);
-    }
-
-    async function executarSorteioEAnimacao() {
-      let nomeFinal = "Marina";
-      
-      if (typeof sortearAmigo === 'function') {
-        nomeFinal = await sortearAmigo();
-      } else if (window.amigoSorteado) {
-        nomeFinal = window.amigoSorteado;
-      }
-
-      rodarSequenciaCompleta(nomeFinal);
-    }
-
-    window.addEventListener('load', initBingoCanvas);
-  </script>
-
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  <script src="app.js"></script>
 </body>
 </html>
