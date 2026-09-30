@@ -171,14 +171,12 @@
       transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
-    /* ETAPA 2: A bolinha cai do tubo */
     .drawn-ball.drop-out {
       opacity: 1;
       top: 180px;
       transform: translateX(-50%) scale(1.8);
     }
 
-    /* ETAPA 3: A bolinha treme isolada */
     .drawn-ball.shake-ball {
       animation: ballShake 0.1s infinite alternate;
     }
@@ -196,7 +194,6 @@
       min-height: 24px;
     }
 
-    /* ETAPA 4: REVELAÇÃO DO NOME */
     .drawn-name-box {
       background: linear-gradient(135deg, #52ab98, #2b6777);
       color: white;
@@ -216,10 +213,15 @@
     }
   </style>
 
-  <!-- Biblioteca de Confetes -->
+  <!-- Canvas Confetti -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
+
+  <!-- ELEMENTO DE ÁUDIO REINSERIDO -->
+  <audio id="bg-music" loop preload="auto">
+    <source src="havaiana.mp3" type="audio/mpeg">
+  </audio>
 
   <div class="main-container">
     
@@ -260,7 +262,6 @@
 
       <div id="bingo-phrase" class="bingo-phrase">Pronto para começar?</div>
 
-      <!-- AQUI ESTAVA O ERRO DE DIGITAÇÃO: Corrigido para acionar o sorteio -->
       <button id="btn-spin" onclick="executarSorteioEAnimacao()">🎰 Sortear Amigo Secreto</button>
     </div>
 
@@ -272,8 +273,6 @@
     </div>
 
   </div>
-
-  <audio id="bg-music" loop preload="auto" src="havaiana.mp3"></audio>
 
   <script>
     let bingoAnimationId = null;
@@ -338,7 +337,6 @@
       }
     }
 
-    // ANIMAÇÃO COMPLETA DAS ETAPAS 1, 2, 3 E 4
     function rodarSequenciaCompleta(nomeSorteado) {
       const btn = document.getElementById('btn-spin');
       const globo = document.getElementById('globo');
@@ -346,10 +344,14 @@
       const drawnBall = document.getElementById('drawn-ball');
       const audio = document.getElementById('bg-music');
 
-      if (audio) audio.play().catch(() => {});
+      // Tocar a música ao iniciar a animação
+      if (audio) {
+        audio.currentTime = 0;
+        audio.play().catch(e => console.log("Erro ao tocar áudio:", e));
+      }
+
       if (btn) btn.disabled = true;
 
-      // ETAPA 1: O globo balança e as bolinhas aceleram
       if (globo) globo.classList.add('shaking');
       balls.forEach(b => { b.vx *= 3.5; b.vy *= 3.5; });
       phraseEl.innerText = "Agitando o globo...";
@@ -358,19 +360,16 @@
         phraseEl.innerText = "A escolher a bolinha...";
       }, 1500);
 
-      // ETAPA 2: A bolinha cai pela tubulação
       setTimeout(() => {
         if (globo) globo.classList.remove('shaking');
         phraseEl.innerText = "A bolinha saiu!";
 
         drawnBall.classList.add('drop-out');
 
-        // ETAPA 3: A bolinha treme no centro
         setTimeout(() => {
           drawnBall.classList.add('shake-ball');
           phraseEl.innerText = "A abrir a bolinha...";
 
-          // ETAPA 4: Revelação com o nome e explosão de confetes!
           setTimeout(() => {
             drawnBall.classList.remove('shake-ball');
             
@@ -386,7 +385,6 @@
       }, 3500);
     }
 
-    // Ação ao Clicar
     async function executarSorteioEAnimacao() {
       let nomeFinal = "Marina";
       
