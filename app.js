@@ -1,4 +1,6 @@
-// Configuração do Firebase
+// ==========================================
+// CONFIGURAÇÃO DO FIREBASE
+// ==========================================
 const firebaseConfig = {
   apiKey: "SEU_API_KEY",
   authDomain: "SEU_PROJECT.firebaseapp.com",
@@ -19,7 +21,9 @@ try {
   console.warn("Firebase não configurado. Usando modo de teste local.", e);
 }
 
-// PARTICIPANTES E SENHA
+// ==========================================
+// DADOS DOS PARTICIPANTES E CONFIGURAÇÕES
+// ==========================================
 const PARTICIPANTES = [
   "Sara", 
   "Efrain", 
@@ -41,20 +45,26 @@ const CORES = ["#e91e63", "#3f51b5", "#ffeb3b", "#e91e63", "#3f51b5", "#ffeb3b",
 let currentAngle = 0;
 let isSpinning = false;
 
-// Ativa o áudio no primeiro toque/clique em qualquer lugar da tela
+// ==========================================
+// CONTROLO DE ÁUDIO AUTOMÁTICO
+// ==========================================
 function ativarAudioGeral() {
   if (musicaIniciada) return;
   const audio = document.getElementById("bg-music");
   if (audio) {
-    audio.volume = 0.3;
+    audio.volume = 0.5; // Volume em 50%
     audio.play().then(() => {
       musicaIniciada = true;
-    }).catch(() => {});
+      console.log("Música havaiana iniciada com sucesso!");
+    }).catch(err => {
+      console.log("Aguardando interação para tocar o áudio:", err);
+    });
   }
 }
 
+// Inicialização ao carregar a página
 window.onload = () => {
-  // Escuta o primeiro toque na tela para desbloquear o som automaticamente
+  // Desbloqueia a música no primeiro toque ou clique na tela
   document.addEventListener("click", ativarAudioGeral, { once: true });
   document.addEventListener("touchstart", ativarAudioGeral, { once: true });
 
@@ -70,7 +80,9 @@ window.onload = () => {
   });
 };
 
+// ==========================================
 // DESENHO DA ROLETA NO CANVAS
+// ==========================================
 function desenharRoleta(angleOffset) {
   const canvas = document.getElementById("wheel-canvas");
   if (!canvas) return;
@@ -81,6 +93,7 @@ function desenharRoleta(angleOffset) {
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+  // Borda externa dourada
   ctx.beginPath();
   ctx.arc(radius, radius, radius - 5, 0, 2 * Math.PI);
   ctx.fillStyle = "#d4af37";
@@ -89,6 +102,7 @@ function desenharRoleta(angleOffset) {
   ctx.strokeStyle = "#8b6b14";
   ctx.stroke();
 
+  // Lâmpadas decorativas
   const numLights = 16;
   for (let i = 0; i < numLights; i++) {
     const lightAngle = (i * 2 * Math.PI) / numLights;
@@ -129,6 +143,7 @@ function desenharRoleta(angleOffset) {
     ctx.restore();
   }
 
+  // Centro da roleta
   ctx.beginPath();
   ctx.arc(0, 0, 32, 0, 2 * Math.PI);
   ctx.fillStyle = "#d4af37";
@@ -140,7 +155,9 @@ function desenharRoleta(angleOffset) {
   ctx.restore();
 }
 
-// ENTRADA/LOGIN
+// ==========================================
+// TELA DE AUTENTICAÇÃO / ENTRADA
+// ==========================================
 async function entrar() {
   ativarAudioGeral();
 
@@ -179,8 +196,11 @@ async function entrar() {
   }
 }
 
-// GIRAR ROLETA
+// ==========================================
+// LÓGICA E ANIMAÇÃO DE GIRAR A ROLETA
+// ==========================================
 async function girarRoleta() {
+  ativarAudioGeral();
   if (jaSorteou || isSpinning) return;
 
   const btnSpin = document.getElementById("btn-spin");
@@ -255,7 +275,9 @@ async function girarRoleta() {
   requestAnimationFrame(animateWheel);
 }
 
-// REVELEÇÃO E CONFETES
+// ==========================================
+// REVELAÇÃO E CONFETES
+// ==========================================
 function exibirTelaFinal(nomeSorteado) {
   document.getElementById("wheel-card").classList.add("hidden");
   
@@ -267,7 +289,7 @@ function exibirTelaFinal(nomeSorteado) {
     if (typeof JSConfetti !== 'undefined') {
       const jsConfetti = new JSConfetti();
       jsConfetti.addConfetti({
-        emojis: ['🎉', '🎁', '✨', '🎄'],
+        emojis: ['🎉', '🎁', '✨', '🎄', '🌺'],
         emojiSize: 30,
         confettiNumber: 60,
       });
@@ -277,7 +299,9 @@ function exibirTelaFinal(nomeSorteado) {
   }
 }
 
-// REINICIAR / RESETAR SORTEIO DO ZERO
+// ==========================================
+// REINICIAR / RESETAR SORTEIO (ORGANIZADOR)
+// ==========================================
 async function reiniciarSorteio() {
   const confirmacao = confirm("⚠️ Tem certeza que deseja apagar TODOS os sorteios e começar do ZERO?\nEsta ação não pode ser desfeita.");
   
