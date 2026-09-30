@@ -1,20 +1,168 @@
-* { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-body { background: #f0f2f5; display: flex; justify-content: center; padding: 20px; color: #333; }
-.container { max-width: 450px; width: 100%; text-align: center; }
-.card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 20px; }
-.hidden { display: none !important; }
+* {
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+}
 
-label { display: block; text-align: left; margin-top: 15px; font-weight: bold; font-size: 14px; }
-select, input { width: 100%; padding: 12px; margin-top: 5px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; background: #fff; }
+body {
+  background: #fbc02d; /* Amarelo vibrante de fundo */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
 
-button { width: 100%; padding: 14px; background: #2e7d32; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; font-weight: bold; transition: 0.2s; }
-button:hover { background: #1b5e20; }
+.main-container {
+  width: 100%;
+  max-width: 420px;
+}
 
-.roulette-box { background: #f8f9fa; border: 2px dashed #2e7d32; border-radius: 8px; padding: 25px; margin: 20px 0; }
-.roulette-name { font-size: 28px; font-weight: bold; color: #2e7d32; margin-top: 10px; min-height: 35px; }
+.card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 25px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
 
-.btn-spin { background: #d32f2f; font-size: 18px; }
-.btn-spin:hover { background: #9a0007; }
+.hidden {
+  display: none !important;
+}
 
-.result-box { background: #e8f5e9; border: 2px solid #2e7d32; padding: 20px; border-radius: 8px; margin-top: 15px; }
-.final-name { font-size: 32px; font-weight: bold; color: #1b5e20; margin-top: 10px; }
+h1 {
+  color: #c62828;
+  margin-bottom: 5px;
+  font-size: 26px;
+}
+
+h2 {
+  color: #333;
+  margin-bottom: 15px;
+  font-size: 20px;
+}
+
+.subtitle {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  text-align: left;
+  margin-top: 12px;
+  font-weight: bold;
+  font-size: 14px;
+  color: #444;
+}
+
+select, input {
+  width: 100%;
+  padding: 12px;
+  margin-top: 5px;
+  margin-bottom: 10px;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 16px;
+  outline: none;
+  background: #fafafa;
+}
+
+select:focus, input:focus {
+  border-color: #2e7d32;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  background: #2e7d32;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: transform 0.1s, background 0.2s;
+}
+
+button:hover {
+  background: #1b5e20;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+.btn-spin {
+  background: #d32f2f;
+  box-shadow: 0 4px 10px rgba(211, 47, 47, 0.4);
+}
+
+.btn-spin:hover {
+  background: #b71c1c;
+}
+
+/* ESTILO DA ROLETA ESTILO CASSINO */
+.wheel-wrapper {
+  position: relative;
+  width: 340px;
+  height: 340px;
+  margin: 10px auto 20px auto;
+}
+
+#wheel-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.pointer {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 16px solid transparent;
+  border-right: 16px solid transparent;
+  border-top: 28px solid #222;
+  z-index: 10;
+  filter: drop-shadow(0px 3px 3px rgba(0,0,0,0.4));
+}
+
+/* TELA DE RESULTADO */
+.result-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f1f8e9 100%);
+  border: 3px solid #2e7d32;
+}
+
+.gift-icon {
+  font-size: 50px;
+  margin-bottom: 10px;
+}
+
+.result-text {
+  font-size: 18px;
+  color: #555;
+  margin-top: 10px;
+}
+
+.drawn-name-box {
+  font-size: 32px;
+  font-weight: 800;
+  color: #2e7d32;
+  background: #ffffff;
+  border: 2px dashed #2e7d32;
+  padding: 18px;
+  border-radius: 12px;
+  margin: 20px 0;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 10px rgba(46, 125, 50, 0.15);
+}
+
+.secret-tip {
+  font-size: 13px;
+  color: #777;
+}
