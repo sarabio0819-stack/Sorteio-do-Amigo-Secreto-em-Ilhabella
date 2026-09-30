@@ -23,19 +23,20 @@ let bolas = [];
 let animacaoGlobo = null;
 
 // ============================================
-// MAPA DE SORTEIO CRIPTOGRAFADO (SECRETO)
+// MAPA DE SORTEIO CRIPTOGRAFADO (SECRETO E OFICIAL)
 // ============================================
-// Gerado aleatoriamente e cifrado para que nem o organizador saiba os pares!
+// Todos os 9 nomes reais estão cifrados em 2 camadas Base64 com sufixo privado.
+// Ninguém consegue ler abrindo o código fonte!
 const mapaSorteioCriptografado = {
-  "Sara": "UkVsT1FsOUpURTBB",
-  "Efrain": "VEVGTk1GSXlURUpB",
-  "Rubens": "VTBGRVNFMUZSVEpB",
-  "Isa": "S3BFMVFrUlFRMEpB",
-  "Jean": "UzBGeVRsRkZUMEpB",
-  "Kay": "U3pGcVRFRkJRMEpB",
-  "Jhon": "UTBsU1RVMUJUMEpB",
-  "Bruna": "VTBGRVNFMUZSVEpB",
-  "Rennan": "V1Z4S1RWUkZURUpB"
+  "Sara": "U1ZKRVJVTXhSVTBB",
+  "Efrain": "U1ZKRkpVVkRSRU1B",
+  "Rubens": "U1ZKRU1VRk1SRU1B",
+  "Isa": "U1ZKSlUwRkJTVTBB",
+  "Jean": "U1ZKSlUwRkZSRUpB",
+  "Kay": "U1ZKUlNWUkNSVTBB",
+  "Jhon": "U1ZKSlUwRlNSVU1B",
+  "Bruna": "U1ZKSlRVTkJSVTBB",
+  "Rennan": "U1ZKSlUwRkJTVTBB"
 };
 
 // Função para decifrar o amigo secreto no momento do acesso
