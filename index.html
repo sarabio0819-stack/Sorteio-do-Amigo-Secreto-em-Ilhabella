@@ -5,53 +5,46 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Amigo Secreto Time RCT | 2026</title>
   
-  <!-- Biblioteca JS-Confetti -->
-  <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
-
   <style>
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: Arial, sans-serif;
     }
 
     body {
+      background: #a8e0d7;
       background: linear-gradient(135deg, #a8e0d7 0%, #d8e2dc 50%, #f1d3b0 100%);
       min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
       padding: 20px;
-      overflow-x: hidden;
     }
 
     .main-container {
       width: 100%;
-      max-width: 420px;
+      max-width: 400px;
     }
 
     .card {
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(10px);
-      border-radius: 20px;
-      padding: 30px 25px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.6);
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 25px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
       text-align: center;
     }
 
     h1 {
       color: #b84335;
-      font-size: 22px;
-      font-weight: 700;
-      margin-bottom: 6px;
+      font-size: 20px;
+      margin-bottom: 8px;
     }
 
     h2 {
       color: #2b6777;
-      font-size: 16px;
-      font-weight: 600;
+      font-size: 15px;
       margin-bottom: 20px;
     }
 
@@ -59,179 +52,122 @@
       display: block;
       text-align: left;
       font-size: 13px;
-      font-weight: 600;
+      font-weight: bold;
       color: #333;
-      margin-top: 15px;
-      margin-bottom: 6px;
+      margin: 12px 0 4px 0;
     }
 
     select, input[type="password"] {
       width: 100%;
-      padding: 12px 14px;
-      border-radius: 12px;
-      border: 1px solid #dcdcdc;
-      background-color: #f7f9f8;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
       font-size: 14px;
-      outline: none;
-      transition: all 0.2s ease;
-    }
-
-    select:focus, input[type="password"]:focus {
-      border-color: #52ab98;
-      background-color: #ffffff;
+      margin-bottom: 10px;
     }
 
     button {
       width: 100%;
-      padding: 14px;
-      margin-top: 25px;
+      padding: 12px;
+      margin-top: 15px;
       border: none;
-      border-radius: 12px;
+      border-radius: 8px;
       background-color: #52ab98;
       color: white;
-      font-size: 16px;
-      font-weight: 600;
+      font-size: 15px;
+      font-weight: bold;
       cursor: pointer;
-      transition: background-color 0.2s ease, transform 0.1s ease;
-      box-shadow: 0 4px 12px rgba(82, 171, 152, 0.3);
     }
 
     button:hover {
-      background-color: #439382;
-    }
-
-    button:active {
-      transform: scale(0.98);
+      background-color: #428b7b;
     }
 
     .btn-reset {
       background: transparent;
-      color: #777;
+      color: #666;
       font-size: 12px;
-      font-weight: 500;
-      margin-top: 20px;
-      padding: 8px;
-      box-shadow: none;
-      border: 1px dashed #ccc;
-    }
-
-    .btn-reset:hover {
-      background: rgba(0, 0, 0, 0.04);
-      color: #444;
+      border: 1px dashed #aaa;
+      margin-top: 15px;
     }
 
     .hidden {
       display: none !important;
     }
 
-    /* MÁQUINA DE BINGO ANIMAÇÃO */
+    /* MÁQUINA DE BINGO */
     .bingo-wrapper {
-      position: relative;
-      width: 280px;
-      height: 280px;
-      margin: 15px auto;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .bingo-sphere {
       position: relative;
       width: 220px;
       height: 220px;
+      margin: 15px auto;
+    }
+
+    .bingo-sphere {
+      width: 200px;
+      height: 200px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.25);
-      border: 6px solid rgba(255, 255, 255, 0.8);
-      box-shadow: inset 0 0 25px rgba(255, 255, 255, 0.8), 0 10px 25px rgba(0, 0, 0, 0.15);
-      backdrop-filter: blur(4px);
+      background: rgba(255, 255, 255, 0.4);
+      border: 4px solid #ffffff;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
       overflow: hidden;
+      margin: 0 auto;
     }
 
-    .bingo-sphere.shaking {
-      animation: shakeSphere 0.12s infinite alternate ease-in-out;
+    .shaking {
+      animation: shake 0.1s infinite alternate;
     }
 
-    @keyframes shakeSphere {
-      0% { transform: translate(-3px, 3px) rotate(-2deg); }
-      100% { transform: translate(3px, -3px) rotate(2deg); }
-    }
-
-    .bingo-stand {
-      position: absolute;
-      bottom: 5px;
-      width: 140px;
-      height: 20px;
-      background: #2b6777;
-      border-radius: 10px;
-      z-index: -1;
+    @keyframes shake {
+      0% { transform: translate(-2px, 2px); }
+      100% { transform: translate(2px, -2px); }
     }
 
     .bingo-phrase {
-      font-size: 15px;
-      font-weight: 600;
+      font-size: 14px;
+      font-weight: bold;
       color: #2b6777;
-      min-height: 24px;
       margin-top: 10px;
-      animation: pulseText 1.2s infinite alternate;
+      min-height: 20px;
     }
 
-    @keyframes pulseText {
-      0% { opacity: 0.6; }
-      100% { opacity: 1; }
-    }
-
-    /* BOLINHA SORTEADA */
     .winning-ball {
       position: absolute;
-      width: 60px;
-      height: 60px;
+      top: 35%;
+      left: 38%;
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%, #ff7675, #d63031);
+      background: #d63031;
       color: white;
       display: flex;
       justify-content: center;
       align-items: center;
-      font-weight: bold;
-      font-size: 20px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-      z-index: 50;
+      font-size: 22px;
       opacity: 0;
-      transform: scale(0.2) translateY(80px);
-      transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transform: scale(0.2);
+      transition: all 0.6s ease;
+      z-index: 10;
     }
 
     .winning-ball.eject {
       opacity: 1;
-      transform: scale(1.8) translateY(-20px);
-    }
-
-    .result-title {
-      font-size: 20px;
-      color: #b84335;
-      font-weight: 800;
-      margin-bottom: 12px;
-      letter-spacing: 0.5px;
+      transform: scale(1.6);
     }
 
     .drawn-name-box {
       background: #52ab98;
       color: white;
-      font-size: 26px;
+      font-size: 22px;
       font-weight: bold;
-      padding: 16px 20px;
-      border-radius: 14px;
+      padding: 15px;
+      border-radius: 10px;
       margin: 15px 0;
-      letter-spacing: 1px;
-      box-shadow: 0 6px 16px rgba(82, 171, 152, 0.3);
-    }
-
-    .secret-tip {
-      font-size: 13px;
-      color: #666;
     }
   </style>
 </head>
 <body>
+
   <div class="main-container">
     
     <!-- TELA 1: LOGIN -->
@@ -257,26 +193,25 @@
     <!-- TELA 2: MÁQUINA DE BINGO -->
     <div id="wheel-card" class="card hidden">
       <h2>Olá, <span id="user-display-name"></span>! 👋</h2>
-      <p class="subtitle">Clique no botão para sortear seu amigo secreto!</p>
+      <p style="font-size:13px; color:#555;">Clique abaixo para realizar o sorteio!</p>
 
       <div class="bingo-wrapper">
         <div id="bingo-sphere" class="bingo-sphere">
-          <canvas id="bingo-canvas" width="220" height="220"></canvas>
+          <canvas id="bingo-canvas" width="200" height="200"></canvas>
         </div>
-        <div class="bingo-stand"></div>
         <div id="winning-ball" class="winning-ball">🎁</div>
       </div>
 
-      <div id="bingo-phrase" class="bingo-phrase">Pronto para misturar os nomes?</div>
+      <div id="bingo-phrase" class="bingo-phrase">Pronto para começar?</div>
 
-      <button id="btn-spin" onclick="executarAnimacaoBingo()" class="btn-spin">🎰 Sortear Amigo Secreto</button>
+      <button id="btn-spin" onclick="executarAnimacaoBingo()">🎰 Sortear Amigo Secreto</button>
     </div>
 
     <!-- TELA 3: REVELAÇÃO -->
     <div id="result-card" class="card hidden">
-      <div class="result-title">🎉 VOCÊ TIROU:</div>
+      <h2 style="color:#b84335;">🎉 VOCÊ TIROU:</h2>
       <div id="drawn-name" class="drawn-name-box">---</div>
-      <p class="secret-tip">🤫 Mantenha segredo até a entrega de presentes!</p>
+      <p style="font-size:12px; color:#666;">🤫 Mantenha segredo até a entrega!</p>
     </div>
 
   </div>
@@ -284,10 +219,9 @@
   <audio id="bg-music" loop preload="auto" src="havaiana.mp3"></audio>
 
   <script>
-    const jsConfetti = new JSConfetti();
     let bingoAnimationId = null;
     let balls = [];
-    const colors = ['#ff7675', '#74b9ff', '#55efc4', '#ffeaa7', '#a29bfe', '#fd79a8'];
+    const colors = ['#ff7675', '#74b9ff', '#55efc4', '#ffeaa7', '#a29bfe'];
 
     function initBingoCanvas() {
       const canvas = document.getElementById('bingo-canvas');
@@ -295,52 +229,34 @@
       const ctx = canvas.getContext('2d');
       balls = [];
       
-      for (let i = 0; i < 20; i++) {
+      for (let i = 0; i < 15; i++) {
         balls.push({
-          x: 40 + Math.random() * 140,
-          y: 40 + Math.random() * 140,
-          radius: 12,
+          x: 30 + Math.random() * 120,
+          y: 30 + Math.random() * 120,
+          radius: 10,
           color: colors[i % colors.length],
-          vx: (Math.random() - 0.5) * 4,
-          vy: (Math.random() - 0.5) * 4
+          vx: (Math.random() - 0.5) * 3,
+          vy: (Math.random() - 0.5) * 3
         });
       }
 
       function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        const centerX = 110;
-        const centerY = 110;
-        const sphereRadius = 98;
-
         balls.forEach(b => {
           b.x += b.vx;
           b.y += b.vy;
 
-          const dx = b.x - centerX;
-          const dy = b.y - centerY;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-
-          if (dist + b.radius > sphereRadius) {
-            const angle = Math.atan2(dy, dx);
-            b.x = centerX + Math.cos(angle) * (sphereRadius - b.radius);
-            b.y = centerY + Math.sin(angle) * (sphereRadius - b.radius);
-            b.vx = -b.vx + (Math.random() - 0.5);
-            b.vy = -b.vy + (Math.random() - 0.5);
-          }
+          if (b.x < 10 || b.x > 190) b.vx *= -1;
+          if (b.y < 10 || b.y > 190) b.vy *= -1;
 
           ctx.beginPath();
           ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
           ctx.fillStyle = b.color;
           ctx.fill();
-          ctx.lineWidth = 2;
-          ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
-          ctx.stroke();
           ctx.closePath();
         });
-
         bingoAnimationId = requestAnimationFrame(draw);
       }
-
       if (bingoAnimationId) cancelAnimationFrame(bingoAnimationId);
       draw();
     }
@@ -352,26 +268,16 @@
       const winningBall = document.getElementById('winning-ball');
       const audio = document.getElementById('bg-music');
 
-      if (audio) {
-        audio.play().catch(e => console.log("Áudio aguardando ação..."));
-      }
-
+      if (audio) audio.play().catch(() => {});
       if (btn) btn.disabled = true;
       if (sphere) sphere.classList.add('shaking');
 
-      balls.forEach(b => {
-        b.vx *= 3;
-        b.vy *= 3;
-      });
+      balls.forEach(b => { b.vx *= 2.5; b.vy *= 2.5; });
 
-      const frases = [
-        "Agitando os nomes...",
-        "Misturando...",
-        "O destino está escolhendo..."
-      ];
-
+      const frases = ["Agitando os nomes...", "Misturando...", "O destino está escolhendo..."];
       let idx = 0;
       if (phraseEl) phraseEl.innerText = frases[0];
+      
       const intervalFrases = setInterval(() => {
         idx = (idx + 1) % frases.length;
         if (phraseEl) phraseEl.innerText = frases[idx];
@@ -380,12 +286,7 @@
       setTimeout(() => {
         clearInterval(intervalFrases);
         if (sphere) sphere.classList.remove('shaking');
-        if (phraseEl) phraseEl.innerText = "Saindo a bolinha premiada!";
-
-        balls.forEach(b => {
-          b.vx *= 0.1;
-          b.vy *= 0.1;
-        });
+        if (phraseEl) phraseEl.innerText = "Saindo a bolinha!";
 
         setTimeout(() => {
           if (winningBall) winningBall.classList.add('eject');
@@ -394,16 +295,8 @@
             document.getElementById('wheel-card').classList.add('hidden');
             document.getElementById('result-card').classList.remove('hidden');
             document.getElementById('drawn-name').innerText = nomeSorteado;
-
-            jsConfetti.addConfetti({
-              emojis: ['🎉', '🎁', '✨', '⭐'],
-              confettiRadius: 6,
-              confettiNumber: 60,
-            });
           }, 1200);
-
         }, 500);
-
       }, 5000);
     }
 
@@ -417,9 +310,7 @@
       }
     }
 
-    window.addEventListener('load', () => {
-      initBingoCanvas();
-    });
+    window.addEventListener('load', initBingoCanvas);
   </script>
 
   <!-- Firebase SDKs -->
