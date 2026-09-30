@@ -23,22 +23,20 @@ let bolas = [];
 let animacaoGlobo = null;
 
 // ============================================
-// MAPA DE SORTEIO CRIPTOGRAFADO (100% LIMPO E SECRETO)
+// NOVO MAPA DE SORTEIO RECOMPUTADO E SECRETO
 // ============================================
-// Cada nome real foi sorteado em ciclo perfeito e codificado em Base64 simples.
 const mapaSorteioCriptografado = {
-  "Sara": "RWZyYWlu",
-  "Efrain": "SXNh",
-  "Isa": "SmVhbg==",
-  "Jean": "S2F5",
-  "Kay": "Smhvbg==",
-  "Jhon": "QnJ1bmE=",
-  "Bruna": "UmVubmFu",
-  "Rennan": "UnViZW5z",
-  "Rubens": "U2FyYQ=="
+  "Sara": "Smhvbg==",
+  "Efrain": "UmVubmFu",
+  "Rubens": "S2F5",
+  "Isa": "RWZyYWlu",
+  "Jean": "U2FyYQ==",
+  "Kay": "QnJ1bmE=",
+  "Jhon": "SXNh",
+  "Bruna": "UnViZW5z",
+  "Rennan": "SmVhbg=="
 };
 
-// Função para decifrar o nome do amigo secreto perfeitamente
 function decifrarAmigo(chaveCriptografada) {
   try {
     return decodeURIComponent(escape(atob(chaveCriptografada)));
