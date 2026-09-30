@@ -1,4 +1,4 @@
-// Configuração do Firebase
+// Configuração do Firebase (Substitua pelos dados do seu console do Firebase)
 const firebaseConfig = {
   apiKey: "SEU_API_KEY",
   authDomain: "SEU_PROJECT.firebaseapp.com",
@@ -11,21 +11,30 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// 1. LISTA FIXA DE PARTICIPANTES DA EQUIPE
+// 1. LISTA ATUALIZADA DE PARTICIPANTES DA EQUIPE
 const PARTICIPANTES = [
-  "Cleia", "Jaque", "Tia Sol", "Carina", "Fatima", 
-  "Irene", "Marly", "Cleide", "Cleisson", "Mateus", 
-  "Emanuelly", "Samyra", "Isa", "Eriky", "Ninha", 
-  "Leticia", "Gabriel", "Vitor", "Rayssa", "Cleber"
+  "Sara", 
+  "Efrain", 
+  "Rubens", 
+  "Isa", 
+  "Jean", 
+  "Kay", 
+  "Jhon", 
+  "Bruna"
 ];
 
 const SENHA_CORRETA = "velhadoecac";
 let usuarioAtual = null;
 let jaSorteou = false;
 
-// Preenche o campo select com os nomes na inicialização
+// Preenche o menu suspenso com os nomes ao carregar a página
 window.onload = () => {
   const select = document.getElementById("user-select");
+  
+  // Limpa as opções anteriores para evitar duplicados
+  select.innerHTML = '<option value="">-- Selecione seu nome --</option>';
+
+  // Ordena os nomes em ordem alfabética e adiciona ao menu
   PARTICIPANTES.sort().forEach(nome => {
     const opt = document.createElement("option");
     opt.value = nome;
@@ -44,26 +53,30 @@ async function entrar() {
   }
 
   if (senhaDigitada !== SENHA_CORRETA) {
-    return alert("Palavra-passe incorreta! Fale com o organizador.");
+    return alert("Palavra-passe incorreta! Tente novamente.");
   }
 
   usuarioAtual = nomeSelecionado;
   
-  // Oculta login e mostra a tela do sorteio
+  // Transição de telas
   document.getElementById("auth-card").classList.add("hidden");
   document.getElementById("app-card").classList.remove("hidden");
   document.getElementById("user-display-name").innerText = usuarioAtual;
 
-  // Verifica se a pessoa já sorteou anteriormente
-  const docRef = await db.collection("sorteios").doc(usuarioAtual).get();
-  if (docRef.exists) {
-    jaSorteou = true;
-    const tirado = docRef.data().tirou;
-    mostrarResultadoFinal(tirado, true);
+  // Verifica se o usuário já realizou o sorteio anteriormente
+  try {
+    const docRef = await db.collection("sorteios").doc(usuarioAtual).get();
+    if (docRef.exists) {
+      jaSorteou = true;
+      const tirado = docRef.data().tirou;
+      mostrarResultadoFinal(tirado, true);
+    }
+  } catch (error) {
+    console.error("Erro ao verificar o sorteio:", error);
   }
 }
 
-// 3. LÓGICA DE GIRAR A ROLETA E SORTEAR
+// 3. LÓGICA DA ROLETA E SORTEIO SEM REPETIÇÃO
 async function girarRoleta() {
   if (jaSorteou) return;
 
@@ -71,7 +84,7 @@ async function girarRoleta() {
   btnGirar.disabled = true;
 
   try {
-    // Busca todos os sorteios já realizados no banco de dados
+    // Busca no Firebase quem já foi tirado por outras pessoas
     const snapshot = await db.collection("sorteios").get();
     const jaTirados = [];
     snapshot.docs.forEach(doc => {
@@ -79,23 +92,25 @@ async function girarRoleta() {
     });
 
     // Filtra opções válidas:
-    // Não pode ser ele mesmo E não pode ter sido tirado por ninguém ainda
+    // 1. Não pode ser a própria pessoa que está logada.
+    // 2. Não pode ser alguém que já foi tirado por outro membro.
     const disponiveis = PARTICIPANTES.filter(nome => 
       nome !== usuarioAtual && !jaTirados.includes(nome)
     );
 
     if (disponiveis.length === 0) {
       btnGirar.disabled = false;
-      return alert("Não há nomes disponíveis para você sortear. Entre em contato com o organizador!");
+      return alert("Não há nomes disponíveis no momento. Fale com o organizador!");
     }
 
-    // Escolhe aleatoriamente dentre as opções disponíveis
+    // Escolhe um nome aleatório da lista de disponíveis
     const sorteado = disponiveis[Math.floor(Math.random() * disponiveis.length)];
 
     // Animação visual da Roleta
     const rouletteDisplay = document.getElementById("roulette-display");
     let giros = 0;
     const maxGiros = 25;
+    
     const interval = setInterval(() => {
       const nomeAleatorio = PARTICIPANTES[Math.floor(Math.random() * PARTICIPANTES.length)];
       rouletteDisplay.innerText = nomeAleatorio;
@@ -104,10 +119,10 @@ async function girarRoleta() {
       if (giros >= maxGiros) {
         clearInterval(interval);
         
-        // Exibe o nome sorteado final
+        // Exibe o resultado sorteado
         rouletteDisplay.innerText = sorteado;
         
-        // Salva a decisão no Firebase para que ninguém mais tire esse nome
+        // Registo no Firebase para travar o nome sorteado
         db.collection("sorteios").doc(usuarioAtual).set({
           tirou: sorteado,
           data: new Date().toISOString()
@@ -121,7 +136,7 @@ async function girarRoleta() {
   } catch (error) {
     console.error("Erro ao realizar o sorteio:", error);
     btnGirar.disabled = false;
-    alert("Ocorreu um erro na conexão. Tente novamente.");
+    alert("Ocorreu um erro ao conectar ao banco de dados. Tente novamente.");
   }
 }
 
