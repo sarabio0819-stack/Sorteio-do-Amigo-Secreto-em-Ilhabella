@@ -72,8 +72,16 @@ function obterMapaSorteio() {
 }
 
 // ============================================
-// INICIALIZAR SITE
+// INICIALIZAR SITE E REPRODUÇÃO DE ÁUDIO
 // ============================================
+
+// Tenta tocar a música assim que o usuário fizer qualquer primeiro clique no site
+window.addEventListener("click", () => {
+  const musica = document.getElementById("bg-music");
+  if (musica && musica.paused) {
+    musica.play().catch(err => console.log("Aguardando interação do usuário para áudio:", err));
+  }
+}, { once: true });
 
 window.addEventListener("DOMContentLoaded", () => {
   const select = document.getElementById("user-select");
@@ -99,7 +107,6 @@ window.addEventListener("DOMContentLoaded", () => {
 function entrar() {
   const select = document.getElementById("user-select");
   const passwordInput = document.getElementById("password-input");
-  const btn = document.getElementById("btn-enter");
 
   const usuario = select.value;
   const senhaDigitada = passwordInput.value;
@@ -114,6 +121,12 @@ function entrar() {
     passwordInput.value = "";
     passwordInput.focus();
     return;
+  }
+
+  // Toca a música caso ainda não tenha iniciado
+  const musica = document.getElementById("bg-music");
+  if (musica && musica.paused) {
+    musica.play().catch(err => console.log("Áudio bloqueado:", err));
   }
 
   usuarioAtual = usuario;
@@ -290,7 +303,7 @@ function rodarSequenciaCompleta(nomeSorteado) {
 
   const musica = document.getElementById("bg-music");
 
-  if (musica) {
+  if (musica && musica.paused) {
     musica.currentTime = 0;
     musica.play().catch(() => {});
   }
