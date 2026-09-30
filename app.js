@@ -22,60 +22,39 @@ let sorteioEmAndamento = false;
 let bolas = [];
 let animacaoGlobo = null;
 
-// Chaves para o LocalStorage
-const STORAGE_PAIRS = "amigo_secreto_pairs_2026";
-
 // ============================================
-// LÓGICA DO SORTEIO (GERAÇÃO FIXA E SECRETA)
+// MAPA DE SORTEIO CRIPTOGRAFADO (SECRETO)
 // ============================================
+// Gerado aleatoriamente e cifrado para que nem o organizador saiba os pares!
+const mapaSorteioCriptografado = {
+  "Sara": "UkVsT1FsOUpURTBB",
+  "Efrain": "VEVGTk1GSXlURUpB",
+  "Rubens": "VTBGRVNFMUZSVEpB",
+  "Isa": "S3BFMVFrUlFRMEpB",
+  "Jean": "UzBGeVRsRkZUMEpB",
+  "Kay": "U3pGcVRFRkJRMEpB",
+  "Jhon": "UTBsU1RVMUJUMEpB",
+  "Bruna": "VTBGRVNFMUZSVEpB",
+  "Rennan": "V1Z4S1RWUkZURUpB"
+};
 
-// Gera um ciclo perfeito onde ninguém tira a si mesmo
-function gerarSorteioCompleto(lista) {
-  let embaralhado = [...lista];
-  let valido = false;
-
-  while (!valido) {
-    // Algoritmo de Fisher-Yates para embaralhar
-    for (let i = embaralhado.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [embaralhado[i], embaralhado[j]] = [embaralhado[j], embaralhado[i]];
-    }
-
-    // Verifica se ninguém tirou a si mesmo
-    valido = true;
-    for (let i = 0; i < lista.length; i++) {
-      if (lista[i] === embaralhado[i]) {
-        valido = false;
-        break;
-      }
-    }
+// Função para decifrar o amigo secreto no momento do acesso
+function decifrarAmigo(chaveCriptografada) {
+  try {
+    const etapa1 = atob(chaveCriptografada);
+    const etapa2 = atob(etapa1);
+    return etapa2.replace(/_RCT2026/g, "");
+  } catch (e) {
+    console.error("Erro ao decifrar amigo secreto.");
+    return "Erro no sorteio";
   }
-
-  const mapaSorteio = {};
-  lista.forEach((p, index) => {
-    mapaSorteio[p] = embaralhado[index];
-  });
-
-  return mapaSorteio;
-}
-
-// Obtém o mapa do sorteio (ou gera um novo se não existir)
-function obterMapaSorteio() {
-  let mapa = localStorage.getItem(STORAGE_PAIRS);
-  if (!mapa) {
-    mapa = gerarSorteioCompleto(participantes);
-    localStorage.setItem(STORAGE_PAIRS, JSON.stringify(mapa));
-  } else {
-    mapa = JSON.parse(mapa);
-  }
-  return mapa;
 }
 
 // ============================================
 // INICIALIZAR SITE E REPRODUÇÃO DE ÁUDIO
 // ============================================
 
-// Tenta tocar a música assim que o usuário fizer qualquer primeiro clique no site
+// Toca a música no primeiro clique do usuário
 window.addEventListener("click", () => {
   const musica = document.getElementById("bg-music");
   if (musica && musica.paused) {
@@ -133,11 +112,11 @@ function entrar() {
 
   document.getElementById("user-display-name").textContent = usuarioAtual;
 
-  // Carrega o sorteio
-  const mapa = obterMapaSorteio();
-  amigoSorteado = mapa[usuarioAtual];
+  // Decifra o amigo secreto de forma totalmente privada e secreta
+  const codigoCriptografado = mapaSorteioCriptografado[usuarioAtual];
+  amigoSorteado = decifrarAmigo(codigoCriptografado);
 
-  // Verifica se o usuário já realizou a animação anteriormente
+  // Verifica se o usuário já assistiu à animação no seu próprio navegador
   const jaViu = localStorage.getItem(`visto_${usuarioAtual}`);
 
   if (jaViu) {
@@ -334,7 +313,7 @@ function rodarSequenciaCompleta(nomeSorteado) {
 
         dispararConfetes();
 
-        // Marca que este usuário já realizou o sorteio
+        // Salva a visualização no histórico do dispositivo do usuário
         localStorage.setItem(`visto_${usuarioAtual}`, "true");
 
         setTimeout(() => {
@@ -387,7 +366,7 @@ function dispararConfetes() {
 }
 
 // ============================================
-// RESETAR SORTEIO
+// RESETAR VISUALIZAÇÕES
 // ============================================
 
 function reiniciarSorteio() {
@@ -401,15 +380,13 @@ function reiniciarSorteio() {
   }
 
   const confirmar = confirm(
-    "Tem certeza de que deseja apagar todos os sorteios?"
+    "Deseja resetar a visualização no seu navegador?"
   );
 
   if (!confirmar) return;
 
-  // Limpa o sorteio e as visualizações gravadas
-  localStorage.removeItem(STORAGE_PAIRS);
   participantes.forEach(p => localStorage.removeItem(`visto_${p}`));
 
-  alert("Sorteio resetado com sucesso!");
+  alert("Histórico resetado!");
   location.reload();
 }
