@@ -8,8 +8,16 @@ const firebaseConfig = {
   appId: "SEU_APP_ID"
 };
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+// Inicialização segura do Firebase
+let db = null;
+try {
+  if (firebaseConfig.apiKey !== "SEU_API_KEY") {
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.firestore();
+  }
+} catch (e) {
+  console.warn("Firebase não configurado. Usando modo de teste local.", e);
+}
 
 // 1. PARTICIPANTES E SENHA
 const PARTICIPANTES = [
@@ -27,28 +35,26 @@ const SENHA_CORRETA = "velhadoecac";
 let usuarioAtual = null;
 let jaSorteou = false;
 
-// Cores vibrantes estilo roleta da foto
+// Cores vibrantes estilo cassino
 const CORES = ["#e91e63", "#3f51b5", "#ffeb3b", "#e91e63", "#3f51b5", "#ffeb3b", "#e91e63", "#3f51b5"];
-const jsConfetti = new JSConfetti();
 
 let currentAngle = 0;
 let isSpinning = false;
 
 window.onload = () => {
   const select = document.getElementById("user-select");
+  if (!select) return;
   select.innerHTML = '<option value="">-- Selecione seu nome --</option>';
 
-  PARTICIPANTES.sort().forEach(nome => {
+  [...PARTICIPANTES].sort().forEach(nome => {
     const opt = document.createElement("option");
     opt.value = nome;
     opt.textContent = nome;
     select.appendChild(opt);
   });
-
-  desenharRoleta(0);
 };
 
-// 2. DESENHO DA ROLETA NO CANVAS (Igual à imagem)
+// 2. DESENHO DA ROLETA NO CANVAS
 function desenharRoleta(angleOffset) {
   const canvas = document.getElementById("wheel-canvas");
   if (!canvas) return;
@@ -59,16 +65,16 @@ function desenharRoleta(angleOffset) {
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Borda Externa Dourada com Luzes
+  // Borda Externa Dourada
   ctx.beginPath();
   ctx.arc(radius, radius, radius - 5, 0, 2 * Math.PI);
-  ctx.fillStyle = "#d4af37"; // Cor Dourada
+  ctx.fillStyle = "#d4af37";
   ctx.fill();
   ctx.lineWidth = 4;
   ctx.strokeStyle = "#8b6b14";
   ctx.stroke();
 
-  // Desenhar lâmpadas/luzes no aro exterior
+  // Luzes no aro
   const numLights = 16;
   for (let i = 0; i < numLights; i++) {
     const lightAngle = (i * 2 * Math.PI) / numLights;
@@ -80,7 +86,6 @@ function desenharRoleta(angleOffset) {
     ctx.fill();
   }
 
-  // Raio interno do círculo das fatias
   const innerRadius = radius - 20;
 
   // Fatias
@@ -102,7 +107,7 @@ function desenharRoleta(angleOffset) {
     ctx.strokeStyle = "#ffffff";
     ctx.stroke();
 
-    // Texto do Nome
+    // Nomes
     ctx.save();
     ctx.rotate(startAngle + sliceAngle / 2);
     ctx.textAlign = "right";
@@ -137,75 +142,92 @@ async function entrar() {
   document.getElementById("auth-card").classList.add("hidden");
   document.getElementById("user-display-name").innerText = usuarioAtual;
 
-  // Verificar se o usuário já realizou o sorteio antes
-  try {
-    const docRef = await db.collection("sorteios").doc(usuarioAtual).get();
-    if (docRef.exists) {
-      jaSorteou = true;
-      const tirado = docRef.data().tirou;
-      exibirTelaFinal(tirado);
-    } else {
-      document.getElementById("wheel-card").classList.remove("hidden");
-      desenharRoleta(0);
+  let tiradoAnteriormente = null;
+
+  // Tenta verificar via Firebase ou via LocalStorage
+  if (db) {
+    try {
+      const docRef = await db.collection("sorteios").doc(usuarioAtual).get();
+      if (docRef.exists) {
+        tiradoAnteriormente = docRef.data().tirou;
+      }
+    } catch (e) {
+      console.error(e);
     }
-  } catch (error) {
-    console.error("Erro na verificação:", error);
+  } else {
+    tiradoAnteriormente = localStorage.getItem("sorteio_" + usuarioAtual);
+  }
+
+  if (tiradoAnteriormente) {
+    jaSorteou = true;
+    exibirTelaFinal(tiradoAnteriormente);
+  } else {
+    document.getElementById("wheel-card").classList.remove("hidden");
+    setTimeout(() => desenharRoleta(0), 100);
   }
 }
 
-// 4. GIRAR ROLETA E SORTEAR
+// 4. GIRAR ROLETA
 async function girarRoleta() {
   if (jaSorteou || isSpinning) return;
 
   const btnSpin = document.getElementById("btn-spin");
   btnSpin.disabled = true;
 
-  try {
-    // Buscar quem já foi sorteado no Firebase
-    const snapshot = await db.collection("sorteios").get();
-    const jaTirados = snapshot.docs.map(doc => doc.data().tirou);
+  let jaTirados = [];
 
-    // Filtro: Não pode ser ele mesmo e não pode já ter sido sorteado por outro
-    const disponiveis = PARTICIPANTES.filter(nome => nome !== usuarioAtual && !jaTirados.includes(nome));
-
-    if (disponiveis.length === 0) {
-      btnSpin.disabled = false;
-      return alert("Não há nomes disponíveis para sorteio no momento!");
+  // Busca nomes já tirados
+  if (db) {
+    try {
+      const snapshot = await db.collection("sorteios").get();
+      jaTirados = snapshot.docs.map(doc => doc.data().tirou);
+    } catch (e) {
+      console.error(e);
     }
+  } else {
+    // Modo local para testes
+    PARTICIPANTES.forEach(p => {
+      const val = localStorage.getItem("sorteio_" + p);
+      if (val) jaTirados.push(val);
+    });
+  }
 
-    const sorteado = disponiveis[Math.floor(Math.random() * disponiveis.length)];
-    const targetIndex = PARTICIPANTES.indexOf(sorteado);
+  const disponiveis = PARTICIPANTES.filter(nome => nome !== usuarioAtual && !jaTirados.includes(nome));
 
-    // Calcular o ângulo exato para o ponteiro parar no nome sorteado
-    const numSlices = PARTICIPANTES.length;
-    const sliceAngle = (2 * Math.PI) / numSlices;
-    
-    // Ponteiro está no topo (270 graus ou 1.5 * PI)
-    const targetAngle = (1.5 * Math.PI) - (targetIndex * sliceAngle + sliceAngle / 2);
-    const extraRounds = 5 * 2 * Math.PI; // 5 voltas completas de animação
-    const finalAngle = currentAngle + extraRounds + (targetAngle - (currentAngle % (2 * Math.PI)));
+  if (disponiveis.length === 0) {
+    btnSpin.disabled = false;
+    return alert("Não há nomes disponíveis para sorteio no momento!");
+  }
 
-    isSpinning = true;
-    const startTime = performance.now();
-    const duration = 4500; // 4.5 segundos de giro
+  const sorteado = disponiveis[Math.floor(Math.random() * disponiveis.length)];
+  const targetIndex = PARTICIPANTES.indexOf(sorteado);
 
-    function animateWheel(now) {
-      const elapsed = now - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      
-      // Suavização da desaceleração (Ease Out Cubic)
-      const easeOut = 1 - Math.pow(1 - progress, 3);
-      const angle = currentAngle + (finalAngle - currentAngle) * easeOut;
+  const numSlices = PARTICIPANTES.length;
+  const sliceAngle = (2 * Math.PI) / numSlices;
+  const targetAngle = (1.5 * Math.PI) - (targetIndex * sliceAngle + sliceAngle / 2);
+  const extraRounds = 5 * 2 * Math.PI;
+  const finalAngle = currentAngle + extraRounds + (targetAngle - (currentAngle % (2 * Math.PI)));
 
-      desenharRoleta(angle);
+  isSpinning = true;
+  const startTime = performance.now();
+  const duration = 4500;
 
-      if (progress < 1) {
-        requestAnimationFrame(animateWheel);
-      } else {
-        currentAngle = finalAngle;
-        isSpinning = false;
+  function animateWheel(now) {
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const easeOut = 1 - Math.pow(1 - progress, 3);
+    const angle = currentAngle + (finalAngle - currentAngle) * easeOut;
 
-        // Salvar no banco de dados
+    desenharRoleta(angle);
+
+    if (progress < 1) {
+      requestAnimationFrame(animateWheel);
+    } else {
+      currentAngle = finalAngle;
+      isSpinning = false;
+
+      // Salva o resultado
+      if (db) {
         db.collection("sorteios").doc(usuarioAtual).set({
           tirou: sorteado,
           data: new Date().toISOString()
@@ -213,19 +235,18 @@ async function girarRoleta() {
           jaSorteou = true;
           exibirTelaFinal(sorteado);
         });
+      } else {
+        localStorage.setItem("sorteio_" + usuarioAtual, sorteado);
+        jaSorteou = true;
+        exibirTelaFinal(sorteado);
       }
     }
-
-    requestAnimationFrame(animateWheel);
-
-  } catch (error) {
-    console.error("Erro ao girar:", error);
-    btnSpin.disabled = false;
-    alert("Erro na conexão. Tente novamente.");
   }
+
+  requestAnimationFrame(animateWheel);
 }
 
-// 5. TELA FINAL + CONFETES
+// 5. REVELAÇÃO E CONFETES
 function exibirTelaFinal(nomeSorteado) {
   document.getElementById("wheel-card").classList.add("hidden");
   
@@ -233,16 +254,17 @@ function exibirTelaFinal(nomeSorteado) {
   document.getElementById("drawn-name").innerText = nomeSorteado;
   resultCard.classList.remove("hidden");
 
-  // Solta chuva de confetes festivos!
-  jsConfetti.addConfetti({
-    emojis: ['🎉', '🎁', '✨', '🎄'],
-    emojiSize: 30,
-    confettiNumber: 60,
-  });
-  
-  jsConfetti.addConfetti({
-    confettiColors: ['#ff0000', '#00ff00', '#ffffff', '#ffeb3b'],
-    confettiRadius: 6,
-    confettiNumber: 100,
-  });
+  // Disparo seguro dos confetes
+  try {
+    if (typeof JSConfetti !== 'undefined') {
+      const jsConfetti = new JSConfetti();
+      jsConfetti.addConfetti({
+        emojis: ['🎉', '🎁', '✨', '🎄'],
+        emojiSize: 30,
+        confettiNumber: 60,
+      });
+    }
+  } catch (e) {
+    console.log("Confetes indisponíveis:", e);
+  }
 }
