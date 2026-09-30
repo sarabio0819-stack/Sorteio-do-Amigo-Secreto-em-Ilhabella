@@ -99,11 +99,11 @@
       display: none !important;
     }
 
-    /* GLOBO DE SORTEIO ESTILO TELE SENA */
+    /* GLOBO DE SORTEIO */
     .bingo-stage {
       position: relative;
       width: 260px;
-      height: 260px;
+      height: 280px;
       margin: 15px auto;
     }
 
@@ -117,23 +117,15 @@
       border: 6px solid #b0c4de;
       box-shadow: inset 0 0 20px rgba(255,255,255,0.8), 0 8px 25px rgba(0,0,0,0.15);
       overflow: hidden;
+      z-index: 1;
     }
 
-    /* Linhas da gaiola do globo */
     .globo-wireframe {
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
       border-radius: 50%;
       border: 2px dashed rgba(100, 120, 140, 0.4);
       pointer-events: none;
-    }
-    .globo-wireframe::before {
-      content: '';
-      position: absolute;
-      top: 15%; left: 0; right: 0; bottom: 15%;
-      border-top: 2px solid rgba(100, 120, 140, 0.3);
-      border-bottom: 2px solid rgba(100, 120, 140, 0.3);
-      border-radius: 50%;
     }
 
     .shaking {
@@ -145,72 +137,66 @@
       100% { transform: translate(3px, -2px) rotate(1deg); }
     }
 
-    /* Tubo de saída na base */
     .tubo-saida {
       position: absolute;
-      bottom: 20px;
+      top: 190px;
       left: 50%;
       transform: translateX(-50%);
-      width: 40px;
-      height: 35px;
-      background: linear-gradient(90deg, #999, #eee, #999);
+      width: 44px;
+      height: 30px;
+      background: linear-gradient(90deg, #888, #eee, #888);
       border-radius: 0 0 10px 10px;
       z-index: 2;
-      border: 2px solid #777;
+      border: 2px solid #666;
     }
 
-    /* A BOLINHA QUE SAI */
+    /* BOLINHA SORTEADA (ETAPAS DE ANIMAÇÃO) */
     .drawn-ball {
       position: absolute;
-      top: 170px;
+      top: 100px;
       left: 50%;
       transform: translateX(-50%) scale(0);
-      width: 70px;
-      height: 70px;
+      width: 65px;
+      height: 65px;
       border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, #ff7675, #d63031);
+      background: radial-gradient(circle at 30% 30%, #ff4757, #ff6b81);
       color: white;
-      font-size: 30px;
+      font-size: 28px;
       display: flex;
       justify-content: center;
       align-items: center;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.3), inset -3px -3px 8px rgba(0,0,0,0.3);
-      z-index: 20;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3), inset -3px -3px 8px rgba(0,0,0,0.2);
+      z-index: 10;
+      opacity: 0;
       transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
-    /* Animação: caindo e vindo para a frente */
+    /* ETAPA 2: A bolinha sai do tubo e cai para a frente */
     .drawn-ball.drop-out {
-      top: 90px;
+      opacity: 1;
+      top: 180px;
       transform: translateX(-50%) scale(1.8);
     }
 
-    /* Animação: chacoalhando antes de abrir */
+    /* ETAPA 3: A bolinha chacoalha com suspense */
     .drawn-ball.shake-ball {
       animation: ballShake 0.1s infinite alternate;
     }
 
     @keyframes ballShake {
-      0% { transform: translateX(-50%) scale(1.8) rotate(-6deg); }
-      100% { transform: translateX(-50%) scale(1.8) rotate(6deg); }
-    }
-
-    /* Revelação de Abertura */
-    .ball-split {
-      position: relative;
-      width: 100%;
-      height: 100%;
+      0% { transform: translateX(-50%) scale(1.8) rotate(-8deg); }
+      100% { transform: translateX(-50%) scale(1.8) rotate(8deg); }
     }
 
     .bingo-phrase {
       font-size: 15px;
       font-weight: bold;
       color: #2b6777;
-      margin-top: 15px;
+      margin-top: 10px;
       min-height: 24px;
     }
 
-    /* CARD DO RESULTADO FINAL */
+    /* ETAPA 4: REVELAÇÃO */
     .drawn-name-box {
       background: linear-gradient(135deg, #52ab98, #2b6777);
       color: white;
@@ -253,11 +239,11 @@
       <button onclick="entrar()">Entrar 🌊</button>
 
       <button onclick="reiniciarSorteio()" class="btn-reset">
-        ⚙️️ Resetar / Novo Sorteio (Organizador)
+        ⚙ Resetar / Novo Sorteio (Organizador)
       </button>
     </div>
 
-    <!-- TELA 2: MÁQUINA DE BINGO COM GLOBO -->
+    <!-- TELA 2: MÁQUINA DE BINGO COM GLOBO E ANIMAÇÃO -->
     <div id="wheel-card" class="card hidden">
       <h2>Olá, <span id="user-display-name"></span>! 👋</h2>
       <p style="font-size:13px; color:#555;">Clique abaixo para girar o globo do sorteio!</p>
@@ -269,16 +255,16 @@
         </div>
         <div class="tubo-saida"></div>
         
-        <!-- Bolinha que cai e abre -->
+        <!-- Bolinha animada -->
         <div id="drawn-ball" class="drawn-ball">🎁</div>
       </div>
 
       <div id="bingo-phrase" class="bingo-phrase">Pronto para começar?</div>
 
-      <button id="btn-spin" onclick="executarAnimacaoBingo()">🎰 Sortear Amigo Secreto</button>
+      <button id="btn-spin" onclick="iniciarAnimacaoE Sorteio()">🎰 Sortear Amigo Secreto</button>
     </div>
 
-    <!-- TELA 3: REVELAÇÃO -->
+    <!-- TELA 3: REVELAÇÃO FINAL -->
     <div id="result-card" class="card hidden">
       <h2 style="color:#b84335;">🎉 VOCÊ TIROU:</h2>
       <div id="drawn-name" class="drawn-name-box">---</div>
@@ -294,14 +280,14 @@
     let balls = [];
     const colors = ['#ff7675', '#74b9ff', '#55efc4', '#ffeaa7', '#a29bfe', '#fd79a8', '#e17055', '#00b894'];
 
-    // Inicializa as bolinhas pulando dentro do globo
+    // Inicializa o canvas com bolinhas pulando no globo
     function initBingoCanvas() {
       const canvas = document.getElementById('bingo-canvas');
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
       balls = [];
       
-      for (let i = 0; i < 20; i++) {
+      for (let i = 0; i < 18; i++) {
         balls.push({
           x: 40 + Math.random() * 120,
           y: 40 + Math.random() * 120,
@@ -318,7 +304,6 @@
           b.x += b.vx;
           b.y += b.vy;
 
-          // Colisão com bordas circulares
           const dx = b.x - 100;
           const dy = b.y - 100;
           const dist = Math.sqrt(dx * dx + dy * dy);
@@ -344,19 +329,18 @@
       draw();
     }
 
-    // Função de Confetes Explosivos
     function dispararConfetes() {
       if (typeof confetti === 'function') {
         confetti({
-          particleCount: 150,
+          particleCount: 160,
           spread: 80,
           origin: { y: 0.6 }
         });
       }
     }
 
-    // ANIMAÇÃO DE SORTEIO ESTILO TELE SENA
-    function iniciarEfeitoBingo(nomeSorteado) {
+    // EXECUTA TODA A SEQUÊNCIA (ETAPAS 1, 2, 3 E 4)
+    function rodarSequenciaCompleta(nomeSorteado) {
       const btn = document.getElementById('btn-spin');
       const globo = document.getElementById('globo');
       const phraseEl = document.getElementById('bingo-phrase');
@@ -365,30 +349,29 @@
 
       if (audio) audio.play().catch(() => {});
       if (btn) btn.disabled = true;
+
+      // ETAPA 1: O globo agita bastante
       if (globo) globo.classList.add('shaking');
-
-      // 1. Aumenta muito a velocidade das bolinhas dentro do globo
-      balls.forEach(b => { b.vx *= 4; b.vy *= 4; });
-
+      balls.forEach(b => { b.vx *= 3; b.vy *= 3; });
       phraseEl.innerText = "Agitando o globo...";
 
       setTimeout(() => {
-        phraseEl.innerText = "A escolher a bolinha feliz...";
+        phraseEl.innerText = "A escolher a bolinha...";
       }, 1500);
 
-      // 2. A bolinha cai do tubo e vai para o centro
+      // ETAPA 2: A bolinha sai da tubulação e cai para a frente
       setTimeout(() => {
         if (globo) globo.classList.remove('shaking');
         phraseEl.innerText = "A bolinha saiu!";
 
         drawnBall.classList.add('drop-out');
 
-        // 3. A bolinha chacoalha com suspense no centro da tela
+        // ETAPA 3: A bolinha para no centro e chacoalha com suspense
         setTimeout(() => {
           drawnBall.classList.add('shake-ball');
           phraseEl.innerText = "A abrir a bolinha...";
 
-          // 4. Revela o nome e dispara os confetes!
+          // ETAPA 4: Revelação com o nome e explosão de confetes!
           setTimeout(() => {
             drawnBall.classList.remove('shake-ball');
             
@@ -397,20 +380,23 @@
             document.getElementById('drawn-name').innerText = nomeSorteado;
             
             dispararConfetes();
-          }, 1500);
+          }, 1600);
 
         }, 1000);
 
       }, 3500);
     }
 
-    function executarAnimacaoBingo() {
-      if (typeof girarRoleta === 'function') {
-        girarRoleta();
-      } else if (window.amigoSorteado) {
-        iniciarEfeitoBingo(window.amigoSorteado);
+    // Função de gatilho acionada pelo botão
+    function iniciarAnimacaoESorteio() {
+      // Procura pelo nome sorteado no app.js ou usa um nome padrão para teste
+      let nomeFinal = window.amigoSorteado || "MARINA";
+      
+      // Se houver lógica do Firebase no app.js, obtém o sorteio antes/durante
+      if (typeof sortearFirebase === 'function') {
+        sortearFirebase((nome) => rodarSequenciaCompleta(nome));
       } else {
-        iniciarEfeitoBingo("MARINA");
+        rodarSequenciaCompleta(nomeFinal);
       }
     }
 
