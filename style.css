@@ -1,16 +1,16 @@
 * {
   box-sizing: border-box;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
   padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
-  background: #fbc02d; /* Amarelo vibrante de fundo */
+  background: linear-gradient(135deg, #a8e0d7 0%, #d8e2dc 50%, #f1d3b0 100%);
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
   padding: 20px;
 }
 
@@ -20,122 +20,167 @@ body {
 }
 
 .card {
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(10px);
   border-radius: 20px;
-  padding: 25px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  padding: 30px 25px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.6);
   text-align: center;
 }
 
-.hidden {
-  display: none !important;
-}
-
 h1 {
-  color: #c62828;
-  margin-bottom: 5px;
-  font-size: 26px;
+  color: #b84335;
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 6px;
 }
 
 h2 {
-  color: #333;
-  margin-bottom: 15px;
-  font-size: 20px;
-}
-
-.subtitle {
-  color: #666;
-  font-size: 14px;
-  margin-bottom: 15px;
+  color: #2b6777;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 20px;
 }
 
 label {
   display: block;
   text-align: left;
-  margin-top: 12px;
-  font-weight: bold;
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+  margin-top: 15px;
+  margin-bottom: 6px;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon, .select-icon {
+  position: absolute;
+  left: 12px;
   font-size: 14px;
-  color: #444;
+  pointer-events: none;
 }
 
-select, input {
+.select-icon {
+  left: auto;
+  right: 35px;
+}
+
+select, input[type="password"] {
   width: 100%;
-  padding: 12px;
-  margin-top: 5px;
-  margin-bottom: 10px;
-  border: 2px solid #e0e0e0;
-  border-radius: 10px;
-  font-size: 16px;
+  padding: 12px 14px;
+  padding-left: 36px;
+  border-radius: 12px;
+  border: 1px solid #dcdcdc;
+  background-color: #f7f9f8;
+  font-size: 14px;
   outline: none;
-  background: #fafafa;
+  transition: all 0.2s ease;
+  appearance: none;
 }
 
-select:focus, input:focus {
-  border-color: #2e7d32;
+select {
+  padding-left: 14px;
+  padding-right: 40px;
+  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23333%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 10px;
+}
+
+select:focus, input[type="password"]:focus {
+  border-color: #52ab98;
+  background-color: #ffffff;
 }
 
 button {
   width: 100%;
   padding: 14px;
-  background: #2e7d32;
-  color: white;
+  margin-top: 25px;
   border: none;
-  border-radius: 10px;
-  font-size: 18px;
-  font-weight: bold;
+  border-radius: 12px;
+  background-color: #52ab98;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
   cursor: pointer;
-  margin-top: 10px;
-  transition: transform 0.1s, background 0.2s;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  box-shadow: 0 4px 12px rgba(82, 171, 152, 0.3);
 }
 
 button:hover {
-  background: #1b5e20;
+  background-color: #439382;
 }
 
 button:active {
   transform: scale(0.98);
 }
 
-.btn-spin {
-  background: #d32f2f;
-  box-shadow: 0 4px 10px rgba(211, 47, 47, 0.4);
+.btn-reset {
+  background: transparent;
+  color: #777;
+  font-size: 12px;
+  font-weight: 500;
+  margin-top: 20px;
+  padding: 8px;
+  box-shadow: none;
+  border: 1px dashed #ccc;
 }
 
-.btn-spin:hover {
-  background: #b71c1c;
+.btn-reset:hover {
+  background: rgba(0, 0, 0, 0.04);
+  color: #444;
 }
 
-/* ESTILO DA ROLETA ESTILO CASSINO */
+.hidden {
+  display: none !important;
+}
+
+/* ROLETA E RESULTADOS */
+.subtitle {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 20px;
+}
+
 .wheel-wrapper {
   position: relative;
-  width: 340px;
-  height: 340px;
-  margin: 10px auto 20px auto;
-}
-
-#wheel-canvas {
-  width: 100%;
-  height: 100%;
+  display: inline-block;
+  margin: 10px 0;
 }
 
 .pointer {
   position: absolute;
-  top: -12px;
+  top: -15px;
   left: 50%;
   transform: translateX(-50%);
   width: 0;
   height: 0;
-  border-left: 16px solid transparent;
-  border-right: 16px solid transparent;
-  border-top: 28px solid #222;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+  border-top: 25px solid #e74c3c;
   z-index: 10;
-  filter: drop-shadow(0px 3px 3px rgba(0,0,0,0.4));
 }
 
-/* TELA DE RESULTADO */
-.result-card {
-  background: linear-gradient(135deg, #ffffff 0%, #f1f8e9 100%);
-  border: 3px solid #2e7d32;
+canvas {
+  border-radius: 50%;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.drawn-name-box {
+  background: #52ab98;
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  padding: 15px;
+  border-radius: 12px;
+  margin: 20px 0;
+  letter-spacing: 1px;
 }
 
 .gift-icon {
@@ -143,26 +188,7 @@ button:active {
   margin-bottom: 10px;
 }
 
-.result-text {
-  font-size: 18px;
-  color: #555;
-  margin-top: 10px;
-}
-
-.drawn-name-box {
-  font-size: 32px;
-  font-weight: 800;
-  color: #2e7d32;
-  background: #ffffff;
-  border: 2px dashed #2e7d32;
-  padding: 18px;
-  border-radius: 12px;
-  margin: 20px 0;
-  letter-spacing: 1px;
-  box-shadow: 0 4px 10px rgba(46, 125, 50, 0.15);
-}
-
 .secret-tip {
   font-size: 13px;
-  color: #777;
+  color: #666;
 }
