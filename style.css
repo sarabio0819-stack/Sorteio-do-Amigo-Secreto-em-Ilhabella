@@ -5,190 +5,571 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+:root {
+  --mint: #52ab98;
+  --teal: #2b6777;
+  --coral: #b84335;
+}
+
 body {
-  background: linear-gradient(135deg, #a8e0d7 0%, #d8e2dc 50%, #f1d3b0 100%);
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 20px;
+  overflow-x: hidden;
+
+  background: linear-gradient(
+    135deg,
+    #a8e0d7 0%,
+    #d8e2dc 50%,
+    #f1d3b0 100%
+  );
 }
 
 .main-container {
   width: 100%;
-  max-width: 420px;
+  max-width: 440px;
 }
 
 .card {
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(10px);
-  border-radius: 20px;
-  padding: 30px 25px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  text-align: center;
-}
-
-h1 {
-  color: #b84335;
-  font-size: 22px;
-  font-weight: 700;
-  margin-bottom: 6px;
-}
-
-h2 {
-  color: #2b6777;
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 20px;
-}
-
-label {
-  display: block;
-  text-align: left;
-  font-size: 13px;
-  font-weight: 600;
-  color: #333;
-  margin-top: 15px;
-  margin-bottom: 6px;
-}
-
-.input-wrapper {
   position: relative;
-  display: flex;
-  align-items: center;
-}
+  padding: 28px 25px;
+  border: 1px solid rgba(255,255,255,.75);
+  border-radius: 22px;
 
-.input-icon, .select-icon {
-  position: absolute;
-  left: 12px;
-  font-size: 14px;
-  pointer-events: none;
-}
+  background: rgba(255,255,255,.91);
 
-.select-icon {
-  left: auto;
-  right: 35px;
-}
+  box-shadow: 0 12px 35px rgba(0,0,0,.12);
 
-select, input[type="password"] {
-  width: 100%;
-  padding: 12px 14px;
-  padding-left: 36px;
-  border-radius: 12px;
-  border: 1px solid #dcdcdc;
-  background-color: #f7f9f8;
-  font-size: 14px;
-  outline: none;
-  transition: all 0.2s ease;
-  appearance: none;
-}
-
-select {
-  padding-left: 14px;
-  padding-right: 40px;
-  background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23333%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
-  background-repeat: no-repeat;
-  background-position: right 12px center;
-  background-size: 10px;
-}
-
-select:focus, input[type="password"]:focus {
-  border-color: #52ab98;
-  background-color: #ffffff;
-}
-
-button {
-  width: 100%;
-  padding: 14px;
-  margin-top: 25px;
-  border: none;
-  border-radius: 12px;
-  background-color: #52ab98;
-  color: white;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.1s ease;
-  box-shadow: 0 4px 12px rgba(82, 171, 152, 0.3);
-}
-
-button:hover {
-  background-color: #439382;
-}
-
-button:active {
-  transform: scale(0.98);
-}
-
-.btn-reset {
-  background: transparent;
-  color: #777;
-  font-size: 12px;
-  font-weight: 500;
-  margin-top: 20px;
-  padding: 8px;
-  box-shadow: none;
-  border: 1px dashed #ccc;
-}
-
-.btn-reset:hover {
-  background: rgba(0, 0, 0, 0.04);
-  color: #444;
+  text-align: center;
+  overflow: hidden;
 }
 
 .hidden {
   display: none !important;
 }
 
-/* ROLETA E RESULTADOS */
-.subtitle {
-  font-size: 14px;
-  color: #555;
-  margin-bottom: 20px;
+/* CABEÇALHO */
+
+.palm {
+  font-size: 28px;
+  margin-bottom: 4px;
 }
 
-.wheel-wrapper {
-  position: relative;
-  display: inline-block;
-  margin: 10px 0;
+h1 {
+  color: var(--coral);
+  font-family: Georgia, serif;
+  font-size: 29px;
+  font-style: italic;
+  margin-bottom: 5px;
 }
 
-.pointer {
-  position: absolute;
-  top: -15px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 0;
-  border-left: 15px solid transparent;
-  border-right: 15px solid transparent;
-  border-top: 25px solid #e74c3c;
-  z-index: 10;
-}
-
-canvas {
-  border-radius: 50%;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-}
-
-.drawn-name-box {
-  background: #52ab98;
-  color: white;
-  font-size: 24px;
-  font-weight: bold;
-  padding: 15px;
-  border-radius: 12px;
-  margin: 20px 0;
+h2 {
+  color: var(--teal);
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 18px;
   letter-spacing: 1px;
 }
 
-.gift-icon {
-  font-size: 50px;
-  margin-bottom: 10px;
+.intro,
+.subtitle,
+.small-note,
+.secret-tip {
+  color: #5e6667;
+  font-size: 13px;
+  line-height: 1.5;
 }
 
-.secret-tip {
+.intro {
+  margin-bottom: 12px;
+}
+
+.small-note {
+  margin-top: 14px;
+}
+
+/* CAMPOS */
+
+label {
+  display: block;
+  margin: 13px 0 6px;
+  color: #333;
   font-size: 13px;
-  color: #666;
+  font-weight: 700;
+  text-align: left;
+}
+
+select,
+input[type="password"] {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #d7dfdc;
+  border-radius: 11px;
+  background: #f7f9f8;
+  font-size: 14px;
+  outline: none;
+
+  transition:
+    border-color .2s,
+    background .2s;
+}
+
+select:focus,
+input:focus {
+  border-color: var(--mint);
+  background: #fff;
+}
+
+/* BOTÕES */
+
+button {
+  width: 100%;
+  margin-top: 20px;
+  padding: 14px;
+  border: 0;
+  border-radius: 12px;
+
+  background: var(--mint);
+  color: white;
+
+  font-size: 15px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  box-shadow: 0 5px 14px rgba(82,171,152,.25);
+
+  transition:
+    background .2s,
+    transform .15s;
+}
+
+button:hover {
+  background: #428b7b;
+}
+
+button:active {
+  transform: scale(.98);
+}
+
+button:disabled {
+  opacity: .65;
+  cursor: wait;
+}
+
+/* BOTÃO DE RESET */
+
+.btn-reset {
+  margin-top: 12px;
+  padding: 9px;
+
+  border: 1px dashed #b9c0be;
+  background: transparent;
+  color: #777;
+
+  box-shadow: none;
+
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.btn-reset:hover {
+  background: rgba(0,0,0,.04);
+  color: #444;
+}
+
+/* TELA DO GLOBO */
+
+.greeting {
+  margin-bottom: 7px;
+}
+
+.subtitle {
+  margin-bottom: 6px;
+}
+
+.bingo-stage {
+  position: relative;
+  width: 280px;
+  height: 310px;
+  max-width: 100%;
+  margin: 10px auto 0;
+}
+
+/* GLOBO TRANSPARENTE */
+
+.globo-container {
+  position: absolute;
+  top: 0;
+  left: 50%;
+
+  width: 206px;
+  height: 206px;
+
+  transform: translateX(-50%);
+
+  border: 7px solid #9eabb1;
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle at 28% 22%,
+      rgba(255,255,255,.9),
+      rgba(202,231,239,.24) 42%,
+      rgba(127,160,174,.2) 100%
+    );
+
+  box-shadow:
+    inset 0 0 22px rgba(255,255,255,.9),
+    inset -8px -9px 18px rgba(73,105,117,.13),
+    0 10px 22px rgba(0,0,0,.17);
+
+  overflow: hidden;
+  z-index: 2;
+}
+
+/* ESTRUTURA METÁLICA */
+
+.globo-container::before,
+.globo-container::after {
+  content: "";
+  position: absolute;
+  z-index: 4;
+  pointer-events: none;
+
+  border: 2px solid rgba(102,120,130,.75);
+  border-radius: 50%;
+}
+
+.globo-container::before {
+  top: -7px;
+  bottom: -7px;
+  left: 31%;
+  right: 31%;
+}
+
+.globo-container::after {
+  top: 31%;
+  bottom: 31%;
+  left: -7px;
+  right: -7px;
+}
+
+.globo-wireframe {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+
+  border: 1px dashed rgba(75,99,112,.5);
+  border-radius: 50%;
+
+  pointer-events: none;
+}
+
+/* BOLINHAS DENTRO DO GLOBO */
+
+canvas {
+  position: relative;
+  z-index: 3;
+
+  display: block;
+
+  width: 200px;
+  height: 200px;
+}
+
+/* REFLEXO DO VIDRO */
+
+.globe-shine {
+  position: absolute;
+  z-index: 6;
+
+  top: 16px;
+  left: 28px;
+
+  width: 46px;
+  height: 80px;
+
+  border-left: 4px solid rgba(255,255,255,.52);
+  border-radius: 50%;
+
+  transform: rotate(24deg);
+
+  pointer-events: none;
+}
+
+/* BASE DO GLOBO */
+
+.globe-neck {
+  position: absolute;
+  top: 198px;
+  left: 50%;
+
+  width: 66px;
+  height: 27px;
+
+  transform: translateX(-50%);
+
+  border: 3px solid #77868b;
+  border-top: 0;
+
+  background: linear-gradient(
+    90deg,
+    #77868b,
+    #f1f3f2 45%,
+    #7f8d91
+  );
+
+  z-index: 1;
+}
+
+/* TUBULAÇÃO DE SAÍDA */
+
+.tubo-saida {
+  position: absolute;
+  top: 217px;
+  left: 50%;
+
+  width: 48px;
+  height: 35px;
+
+  transform: translateX(-50%);
+
+  border: 3px solid #68777d;
+  border-top: 0;
+  border-radius: 0 0 9px 9px;
+
+  background: linear-gradient(
+    90deg,
+    #78858a,
+    #f4f5f4 45%,
+    #78858a
+  );
+
+  z-index: 4;
+}
+
+/* GLOBO CHACOALHANDO */
+
+.shaking {
+  animation: shakeGlobe .09s infinite alternate ease-in-out;
+}
+
+@keyframes shakeGlobe {
+  from {
+    transform: translateX(-50%) rotate(-2deg);
+  }
+
+  to {
+    transform: translateX(-50%) rotate(2deg);
+  }
+}
+
+/* BOLINHA QUE SAI DO GLOBO */
+
+.drawn-ball {
+  position: absolute;
+  top: 204px;
+  left: 50%;
+
+  width: 78px;
+  height: 78px;
+
+  opacity: 0;
+  z-index: 8;
+
+  transform: translate(-50%, -5px) scale(.2);
+  transform-origin: center;
+
+  transition:
+    top .75s ease,
+    transform .75s cubic-bezier(.175,.885,.32,1.275),
+    opacity .35s ease;
+}
+
+/* BOLINHA CAINDO */
+
+.drawn-ball.drop-out {
+  top: 235px;
+  opacity: 1;
+
+  transform: translate(-50%, 0) scale(1.22);
+}
+
+/* DUAS METADES */
+
+.ball-half {
+  position: absolute;
+  left: 0;
+
+  width: 78px;
+  height: 39px;
+
+  background: radial-gradient(
+    circle at 30% 20%,
+    #d8a5ff,
+    #9333ea 55%,
+    #581c87
+  );
+
+  border: 2px solid rgba(255,255,255,.75);
+
+  box-shadow: 0 5px 12px rgba(0,0,0,.24);
+
+  transition: transform .8s cubic-bezier(.2,.8,.2,1);
+}
+
+/* PARTE SUPERIOR */
+
+.ball-top {
+  top: 0;
+
+  border-radius: 50% 50% 0 0;
+  border-bottom: 1px solid rgba(255,255,255,.6);
+}
+
+/* PARTE INFERIOR */
+
+.ball-bottom {
+  bottom: 0;
+
+  border-radius: 0 0 50% 50%;
+  border-top: 1px solid rgba(255,255,255,.6);
+}
+
+/* BOLINHA CHACOALHANDO */
+
+.drawn-ball.shake-ball {
+  animation: ballShake .11s infinite alternate;
+}
+
+@keyframes ballShake {
+  from {
+    transform: translate(-50%, 0) scale(1.22) rotate(-9deg);
+  }
+
+  to {
+    transform: translate(-50%, 0) scale(1.22) rotate(9deg);
+  }
+}
+
+/* ABERTURA DA BOLINHA */
+
+.drawn-ball.open-ball .ball-top {
+  transform: translateY(-43px) rotate(-18deg);
+}
+
+.drawn-ball.open-ball .ball-bottom {
+  transform: translateY(43px) rotate(18deg);
+}
+
+/* NOME DENTRO DA BOLINHA */
+
+.ball-name {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 5px;
+
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+  text-align: center;
+
+  text-shadow: 1px 2px 4px rgba(0,0,0,.8);
+
+  opacity: 0;
+
+  transition: opacity .35s ease;
+
+  overflow-wrap: anywhere;
+}
+
+.drawn-ball.open-ball .ball-name {
+  opacity: 1;
+}
+
+/* FRASES DURANTE O SORTEIO */
+
+.bingo-phrase {
+  min-height: 25px;
+  margin-top: 0;
+
+  color: var(--teal);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* RESULTADO FINAL */
+
+.drawn-name-box {
+  margin: 22px 0;
+  padding: 20px 12px;
+
+  border-radius: 15px;
+
+  background: linear-gradient(
+    135deg,
+    #52ab98,
+    #2b6777
+  );
+
+  color: #fff;
+  font-size: 27px;
+  font-weight: 800;
+  letter-spacing: 1px;
+
+  overflow-wrap: anywhere;
+
+  box-shadow: 0 8px 20px rgba(43,103,119,.3);
+
+  animation: popIn .5s ease-out;
+}
+
+.result-title {
+  color: var(--coral);
+}
+
+.result-confetti {
+  font-size: 36px;
+  margin-bottom: 8px;
+}
+
+/* ANIMAÇÃO DO RESULTADO */
+
+@keyframes popIn {
+  from {
+    transform: scale(.5);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* CELULARES */
+
+@media (max-width: 360px) {
+  body {
+    padding: 12px;
+  }
+
+  .card {
+    padding: 23px 17px;
+  }
+
+  .bingo-stage {
+    transform: scale(.92);
+    transform-origin: top center;
+    margin-bottom: -20px;
+  }
 }
