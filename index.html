@@ -8,33 +8,37 @@
 </head>
 <body>
   <div class="container">
-    <h1>🎄 Amigo Secreto da Equipe</h1>
+    <h1>🎄 Amigo Secreto</h1>
 
-    <!-- TELA DE LOGIN / CADASTRO DE NOME -->
-    <div id="auth-section" class="card">
-      <h2>Entrar no Sorteio</h2>
-      <input type="text" id="username-input" placeholder="Digite seu nome completo" />
-      <button onclick="login()">Entrar</button>
+    <!-- TELA DE LOGIN / SELEÇÃO DE NOME -->
+    <div id="auth-card" class="card">
+      <h2>Acessar o Sorteio</h2>
+      
+      <label for="user-select">Quem é você?</label>
+      <select id="user-select">
+        <option value="">-- Selecione seu nome --</option>
+      </select>
+
+      <label for="password-input">Palavra-passe:</label>
+      <input type="password" id="password-input" placeholder="Digite a palavra-passe" />
+
+      <button onclick="entrar()">Entrar</button>
     </div>
 
-    <!-- PAINEL DO USUÁRIO -->
-    <div id="app-section" class="card hidden">
+    <!-- TELA DA ROLETA / RESULTADO -->
+    <div id="app-card" class="card hidden">
       <h2>Olá, <span id="user-display-name"></span>! 👋</h2>
 
-      <div id="draw-result-box" class="reveal-box">
-        <p>Seu Amigo Secreto é:</p>
-        <button id="reveal-btn" onclick="toggleReveal()">Clique para Revelar</button>
-        <h3 id="target-name" class="hidden">???</h3>
+      <div id="roulette-container" class="roulette-box">
+        <p>Clique no botão para girar a roleta e descobrir seu amigo secreto:</p>
+        <div id="roulette-display" class="roulette-name">???</div>
       </div>
 
-      <hr />
+      <button id="btn-girar" onclick="girarRoleta()" class="btn-spin">🎰 Girar Roleta</button>
 
-      <!-- ÁREA DE ADMIN (Apenas para realizar o sorteio) -->
-      <div class="admin-box">
-        <h3>Painel de Organização</h3>
-        <p>Participantes confirmados: <strong id="participant-count">0</strong></p>
-        <ul id="participant-list"></ul>
-        <button id="draw-btn" onclick="realizarSorteio()" class="btn-danger">🎲 Realizar Sorteio</button>
+      <div id="result-area" class="result-box hidden">
+        <h3 id="result-title">Seu amigo secreto é:</h3>
+        <div id="drawn-name" class="final-name"></div>
       </div>
     </div>
   </div>
