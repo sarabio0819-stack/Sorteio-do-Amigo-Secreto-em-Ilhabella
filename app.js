@@ -2,8 +2,6 @@
 // AMIGO SECRETO RCT 2026
 // ============================================
 
-const SENHA = "velhadoecac";
-
 const participantes = [
   "Sara",
   "Efrain",
@@ -16,6 +14,21 @@ const participantes = [
   "Rennan"
 ];
 
+// ============================================
+// MAPA DE SENHAS INDIVIDUAIS
+// ============================================
+const senhasParticipantes = {
+  "Isa": "odeioamigosecreto",
+  "Rennan": "iphone",
+  "Kay": "microfoneporfavor",
+  "Sara": "velhadoecac1",
+  "Jean": "cavaloemoto",
+  "Rubens": "velhadoecac1",
+  "Efrain": "velhadoecac1",
+  "Bruna": "tributariando",
+  "Jhon": "encheminhagarrafa"
+};
+
 let usuarioAtual = "";
 let amigoSorteado = "";
 let sorteioEmAndamento = false;
@@ -23,18 +36,18 @@ let bolas = [];
 let animacaoGlobo = null;
 
 // ============================================
-// NOVO MAPA DE SORTEIO RECOMPUTADO E SECRETO
+// NOVO MAPA DE SORTEIO EMBARALHADO (100% SECRETO)
 // ============================================
 const mapaSorteioCriptografado = {
-  "Sara": "Smhvbg==",
-  "Efrain": "UmVubmFu",
-  "Rubens": "S2F5",
-  "Isa": "RWZyYWlu",
-  "Jean": "U2FyYQ==",
-  "Kay": "QnJ1bmE=",
-  "Jhon": "SXNh",
-  "Bruna": "UnViZW5z",
-  "Rennan": "SmVhbg=="
+  "Sara": "UmVubmFu",
+  "Efrain": "S2F5",
+  "Rubens": "SXNh",
+  "Isa": "QnJ1bmE=",
+  "Jean": "RWZyYWlu",
+  "Kay": "U2FyYQ==",
+  "Jhon": "UnViZW5z",
+  "Bruna": "SmVhbg==",
+  "Rennan": "Smhvbg=="
 };
 
 function decifrarAmigo(chaveCriptografada) {
@@ -75,7 +88,7 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 // ============================================
-// ENTRAR NO SITE
+// ENTRAR NO SITE (VALIDAÇÃO POR USUÁRIO)
 // ============================================
 
 function entrar() {
@@ -90,8 +103,10 @@ function entrar() {
     return;
   }
 
-  if (senhaDigitada !== SENHA) {
-    alert("Senha incorreta! Tente novamente.");
+  const senhaCorreta = senhasParticipantes[usuario];
+
+  if (senhaDigitada !== senhaCorreta) {
+    alert("Senha incorreta para este participante! Tente novamente.");
     passwordInput.value = "";
     passwordInput.focus();
     return;
@@ -361,11 +376,11 @@ function dispararConfetes() {
 // ============================================
 
 function reiniciarSorteio() {
-  const senha = prompt("Senha do organizador:");
+  const senha = prompt("Digite sua senha de acesso para resetar:");
 
   if (senha === null) return;
 
-  if (senha !== SENHA) {
+  if (senha !== "velhadoecac" && senha !== senhasParticipantes[usuarioAtual]) {
     alert("Senha incorreta!");
     return;
   }
