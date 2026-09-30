@@ -19,7 +19,7 @@ try {
   console.warn("Firebase não configurado. Usando modo de teste local.", e);
 }
 
-// 1. PARTICIPANTES E SENHA
+// PARTICIPANTES E SENHA
 const PARTICIPANTES = [
   "Sara", 
   "Efrain", 
@@ -34,14 +34,30 @@ const PARTICIPANTES = [
 const SENHA_CORRETA = "velhadoecac";
 let usuarioAtual = null;
 let jaSorteou = false;
+let musicaIniciada = false;
 
-// Cores vibrantes estilo cassino
 const CORES = ["#e91e63", "#3f51b5", "#ffeb3b", "#e91e63", "#3f51b5", "#ffeb3b", "#e91e63", "#3f51b5"];
 
 let currentAngle = 0;
 let isSpinning = false;
 
+// Ativa o áudio no primeiro toque/clique em qualquer lugar da tela
+function ativarAudioGeral() {
+  if (musicaIniciada) return;
+  const audio = document.getElementById("bg-music");
+  if (audio) {
+    audio.volume = 0.3;
+    audio.play().then(() => {
+      musicaIniciada = true;
+    }).catch(() => {});
+  }
+}
+
 window.onload = () => {
+  // Escuta o primeiro toque na tela para desbloquear o som automaticamente
+  document.addEventListener("click", ativarAudioGeral, { once: true });
+  document.addEventListener("touchstart", ativarAudioGeral, { once: true });
+
   const select = document.getElementById("user-select");
   if (!select) return;
   select.innerHTML = '<option value="">-- Selecione seu nome --</option>';
@@ -54,7 +70,7 @@ window.onload = () => {
   });
 };
 
-// 2. DESENHO DA ROLETA NO CANVAS
+// DESENHO DA ROLETA NO CANVAS
 function desenharRoleta(angleOffset) {
   const canvas = document.getElementById("wheel-canvas");
   if (!canvas) return;
@@ -65,7 +81,6 @@ function desenharRoleta(angleOffset) {
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Borda Externa Dourada
   ctx.beginPath();
   ctx.arc(radius, radius, radius - 5, 0, 2 * Math.PI);
   ctx.fillStyle = "#d4af37";
@@ -74,7 +89,6 @@ function desenharRoleta(angleOffset) {
   ctx.strokeStyle = "#8b6b14";
   ctx.stroke();
 
-  // Luzes no aro
   const numLights = 16;
   for (let i = 0; i < numLights; i++) {
     const lightAngle = (i * 2 * Math.PI) / numLights;
@@ -88,7 +102,6 @@ function desenharRoleta(angleOffset) {
 
   const innerRadius = radius - 20;
 
-  // Fatias
   ctx.save();
   ctx.translate(radius, radius);
   ctx.rotate(angleOffset);
@@ -107,7 +120,6 @@ function desenharRoleta(angleOffset) {
     ctx.strokeStyle = "#ffffff";
     ctx.stroke();
 
-    // Nomes
     ctx.save();
     ctx.rotate(startAngle + sliceAngle / 2);
     ctx.textAlign = "right";
@@ -117,7 +129,6 @@ function desenharRoleta(angleOffset) {
     ctx.restore();
   }
 
-  // Centro Dourado
   ctx.beginPath();
   ctx.arc(0, 0, 32, 0, 2 * Math.PI);
   ctx.fillStyle = "#d4af37";
@@ -129,8 +140,10 @@ function desenharRoleta(angleOffset) {
   ctx.restore();
 }
 
-// 3. ENTRADA/LOGIN
+// ENTRADA/LOGIN
 async function entrar() {
+  ativarAudioGeral();
+
   const nomeSelecionado = document.getElementById("user-select").value;
   const senhaDigitada = document.getElementById("password-input").value.trim();
 
@@ -144,7 +157,6 @@ async function entrar() {
 
   let tiradoAnteriormente = null;
 
-  // Tenta verificar via Firebase ou via LocalStorage
   if (db) {
     try {
       const docRef = await db.collection("sorteios").doc(usuarioAtual).get();
@@ -167,7 +179,7 @@ async function entrar() {
   }
 }
 
-// 4. GIRAR ROLETA
+// GIRAR ROLETA
 async function girarRoleta() {
   if (jaSorteou || isSpinning) return;
 
@@ -176,7 +188,6 @@ async function girarRoleta() {
 
   let jaTirados = [];
 
-  // Busca nomes já tirados
   if (db) {
     try {
       const snapshot = await db.collection("sorteios").get();
@@ -185,7 +196,6 @@ async function girarRoleta() {
       console.error(e);
     }
   } else {
-    // Modo local para testes
     PARTICIPANTES.forEach(p => {
       const val = localStorage.getItem("sorteio_" + p);
       if (val) jaTirados.push(val);
@@ -226,7 +236,6 @@ async function girarRoleta() {
       currentAngle = finalAngle;
       isSpinning = false;
 
-      // Salva o resultado
       if (db) {
         db.collection("sorteios").doc(usuarioAtual).set({
           tirou: sorteado,
@@ -246,7 +255,7 @@ async function girarRoleta() {
   requestAnimationFrame(animateWheel);
 }
 
-// 5. REVELAÇÃO E CONFETES
+// REVELEÇÃO E CONFETES
 function exibirTelaFinal(nomeSorteado) {
   document.getElementById("wheel-card").classList.add("hidden");
   
@@ -254,7 +263,6 @@ function exibirTelaFinal(nomeSorteado) {
   document.getElementById("drawn-name").innerText = nomeSorteado;
   resultCard.classList.remove("hidden");
 
-  // Disparo seguro dos confetes
   try {
     if (typeof JSConfetti !== 'undefined') {
       const jsConfetti = new JSConfetti();
@@ -269,14 +277,13 @@ function exibirTelaFinal(nomeSorteado) {
   }
 }
 
-// 6. REINICIAR / RESETAR SORTEIO DO ZERO
+// REINICIAR / RESETAR SORTEIO DO ZERO
 async function reiniciarSorteio() {
   const confirmacao = confirm("⚠️ Tem certeza que deseja apagar TODOS os sorteios e começar do ZERO?\nEsta ação não pode ser desfeita.");
   
   if (!confirmacao) return;
 
   try {
-    // Limpa banco do Firebase (se configurado)
     if (db) {
       const snapshot = await db.collection("sorteios").get();
       const batch = db.batch();
@@ -286,7 +293,6 @@ async function reiniciarSorteio() {
       await batch.commit();
     }
 
-    // Limpa os dados de teste salvos localmente
     PARTICIPANTES.forEach(p => {
       localStorage.removeItem("sorteio_" + p);
     });
