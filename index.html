@@ -99,7 +99,7 @@
       display: none !important;
     }
 
-    /* GLOBO DO BINGO ESTILO TELE SENA */
+    /* GLOBO DO BINGO */
     .bingo-stage {
       position: relative;
       width: 260px;
@@ -243,7 +243,7 @@
       </button>
     </div>
 
-    <!-- TELA 2: MÁQUINA DE BINGO (GLOBO + ANIMAÇÕES) -->
+    <!-- TELA 2: MÁQUINA DE BINGO -->
     <div id="wheel-card" class="card hidden">
       <h2>Olá, <span id="user-display-name"></span>! 👋</h2>
       <p style="font-size:13px; color:#555;">Clique abaixo para girar o globo do sorteio!</p>
@@ -255,13 +255,13 @@
         </div>
         <div class="tubo-saida"></div>
         
-        <!-- Bolinha animada -->
         <div id="drawn-ball" class="drawn-ball">🎁</div>
       </div>
 
       <div id="bingo-phrase" class="bingo-phrase">Pronto para começar?</div>
 
-      <button id="btn-spin" onclick="iniciarAnimacaoE Sorteio()">🎰 Sortear Amigo Secreto</button>
+      <!-- AQUI ESTAVA O ERRO DE DIGITAÇÃO: Corrigido para acionar o sorteio -->
+      <button id="btn-spin" onclick="executarSorteioEAnimacao()">🎰 Sortear Amigo Secreto</button>
     </div>
 
     <!-- TELA 3: REVELAÇÃO FINAL -->
@@ -338,7 +338,7 @@
       }
     }
 
-    // ANIMAÇÃO DE TODAS AS ETAPAS (1, 2, 3 E 4)
+    // ANIMAÇÃO COMPLETA DAS ETAPAS 1, 2, 3 E 4
     function rodarSequenciaCompleta(nomeSorteado) {
       const btn = document.getElementById('btn-spin');
       const globo = document.getElementById('globo');
@@ -386,25 +386,17 @@
       }, 3500);
     }
 
-    // Executa ao clicar no botão "Sortear Amigo Secreto"
-    function iniciarAnimacaoESorteio() {
-      // 1. Tenta acionar a função original do app.js se existir
-      if (typeof girarRoleta === 'function') {
-        girarRoleta();
-      }
+    // Ação ao Clicar
+    async function executarSorteioEAnimacao() {
+      let nomeFinal = "Marina";
       
-      // 2. Procura pelo nome sorteado (armazenado pelo app.js) ou pega do elemento
-      setTimeout(() => {
-        let nomeResultado = window.amigoSorteado || 
-                            (document.getElementById('drawn-name') ? document.getElementById('drawn-name').innerText : '') || 
-                            "Bruna";
+      if (typeof sortearAmigo === 'function') {
+        nomeFinal = await sortearAmigo();
+      } else if (window.amigoSorteado) {
+        nomeFinal = window.amigoSorteado;
+      }
 
-        if (nomeResultado === '---' || !nomeResultado) {
-          nomeResultado = "Bruna";
-        }
-
-        rodarSequenciaCompleta(nomeResultado);
-      }, 200);
+      rodarSequenciaCompleta(nomeFinal);
     }
 
     window.addEventListener('load', initBingoCanvas);
