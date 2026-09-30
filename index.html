@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Amigo Secreto Time RCT | 2026</title>
-  <link rel="stylesheet" href="estilo.css" />
-  <!-- Biblioteca JS-Confetti para efeito de comemoração -->
+  <link rel="stylesheet" href="estilo.css">
   <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
 </head>
 <body>
@@ -17,18 +16,12 @@
       <h2>Acessar o Sorteio</h2>
       
       <label for="user-select">Quem é você?</label>
-      <div class="input-wrapper">
-        <select id="user-select">
-          <option value="">Selecione seu nome</option>
-        </select>
-        <span class="select-icon">🌿</span>
-      </div>
+      <select id="user-select">
+        <option value="">Selecione seu nome</option>
+      </select>
 
       <label for="password-input">Palavra-passe:</label>
-      <div class="input-wrapper">
-        <span class="input-icon">🔒</span>
-        <input type="password" id="password-input" placeholder="Digite a palavra-passe" />
-      </div>
+      <input type="password" id="password-input" placeholder="Digite a palavra-passe">
 
       <button onclick="entrar()">Entrar 🌊</button>
 
@@ -50,7 +43,7 @@
       <button id="btn-spin" onclick="girarRoleta()" class="btn-spin">🎰 Girar Roleta</button>
     </div>
 
-    <!-- TELA 3: REVELAÇÃO DO AMIGO SECRETO -->
+    <!-- TELA 3: REVELAÇÃO -->
     <div id="result-card" class="card hidden result-card">
       <div class="gift-icon">🎁</div>
       <h2>Parabéns!</h2>
@@ -61,10 +54,8 @@
 
   </div>
 
-  <!-- ÁUDIO DE FUNDO HAVAIANO LOCAL -->
   <audio id="bg-music" loop preload="auto" src="havaiana.mp3"></audio>
 
-  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
   <script src="app.js"></script>
