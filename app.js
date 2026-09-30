@@ -13,9 +13,9 @@ if (!firebase.apps.length) {
 }
 const db = firebase.firestore();
 
-// Lista de participantes
+// Lista atualizada de participantes
 const participantes = [
-  "Jhon", "Bruna", "Marina", "Isa", "Lucas", "Carlos", "Fernanda"
+  "Sara", "Efrain", "Rubens", "Isa", "Jean", "Kay", "Jhon", "Bruna", "Rennan"
 ];
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -67,7 +67,7 @@ async function entrar() {
   }
 }
 
-// Função de sorteio chamada pelo index.html
+// Lógica de sorteio que exclui o próprio utilizador da lista
 async function sortearAmigo() {
   const possiveis = participantes.filter(nome => nome !== usuarioAtual);
   const sorteado = possiveis[Math.floor(Math.random() * possiveis.length)];
@@ -88,17 +88,19 @@ async function sortearAmigo() {
 
 async function reiniciarSorteio() {
   const pass = prompt("Palavra-passe do organizador:");
-  if (pass === "velhadoecac") {
+  if (pass === "admin123") {
     try {
       const snapshot = await db.collection("sorteios").get();
       const batch = db.batch();
       snapshot.docs.forEach(doc => batch.delete(doc.ref));
       await batch.commit();
-      alert("Sorteio resetado!");
+      alert("Sorteio resetado com sucesso!");
       location.reload();
     } catch (e) {
       alert("Sorteio resetado localmente!");
       location.reload();
     }
+  } else if (pass) {
+    alert("Palavra-passe incorreta!");
   }
 }
