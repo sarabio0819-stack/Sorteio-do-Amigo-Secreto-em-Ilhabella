@@ -1,13 +1,20 @@
 * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
 body { background: #f0f2f5; display: flex; justify-content: center; padding: 20px; color: #333; }
-.container { max-width: 500px; width: 100%; }
-.card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 20px; text-align: center; }
+.container { max-width: 450px; width: 100%; text-align: center; }
+.card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); margin-bottom: 20px; }
 .hidden { display: none !important; }
-input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; }
-button { width: 100%; padding: 12px; background: #2e7d32; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; font-weight: bold; }
+
+label { display: block; text-align: left; margin-top: 15px; font-weight: bold; font-size: 14px; }
+select, input { width: 100%; padding: 12px; margin-top: 5px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 6px; font-size: 16px; background: #fff; }
+
+button { width: 100%; padding: 14px; background: #2e7d32; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; font-weight: bold; transition: 0.2s; }
 button:hover { background: #1b5e20; }
-.btn-danger { background: #c62828; }
-.btn-danger:hover { background: #8e0000; }
-.reveal-box { background: #e8f5e9; padding: 20px; border-radius: 8px; margin: 15px 0; }
-#target-name { font-size: 24px; color: #2e7d32; margin-top: 10px; }
-ul { text-align: left; padding-left: 20px; }
+
+.roulette-box { background: #f8f9fa; border: 2px dashed #2e7d32; border-radius: 8px; padding: 25px; margin: 20px 0; }
+.roulette-name { font-size: 28px; font-weight: bold; color: #2e7d32; margin-top: 10px; min-height: 35px; }
+
+.btn-spin { background: #d32f2f; font-size: 18px; }
+.btn-spin:hover { background: #9a0007; }
+
+.result-box { background: #e8f5e9; border: 2px solid #2e7d32; padding: 20px; border-radius: 8px; margin-top: 15px; }
+.final-name { font-size: 32px; font-weight: bold; color: #1b5e20; margin-top: 10px; }
