@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Amigo Secreto da Equipe</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>🎄 Amigo Secreto da Equipe</h1>
+
+    <!-- TELA DE LOGIN / CADASTRO DE NOME -->
+    <div id="auth-section" class="card">
+      <h2>Entrar no Sorteio</h2>
+      <input type="text" id="username-input" placeholder="Digite seu nome completo" />
+      <button onclick="login()">Entrar</button>
+    </div>
+
+    <!-- PAINEL DO USUÁRIO -->
+    <div id="app-section" class="card hidden">
+      <h2>Olá, <span id="user-display-name"></span>! 👋</h2>
+
+      <div id="draw-result-box" class="reveal-box">
+        <p>Seu Amigo Secreto é:</p>
+        <button id="reveal-btn" onclick="toggleReveal()">Clique para Revelar</button>
+        <h3 id="target-name" class="hidden">???</h3>
+      </div>
+
+      <hr />
+
+      <!-- ÁREA DE ADMIN (Apenas para realizar o sorteio) -->
+      <div class="admin-box">
+        <h3>Painel de Organização</h3>
+        <p>Participantes confirmados: <strong id="participant-count">0</strong></p>
+        <ul id="participant-list"></ul>
+        <button id="draw-btn" onclick="realizarSorteio()" class="btn-danger">🎲 Realizar Sorteio</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
