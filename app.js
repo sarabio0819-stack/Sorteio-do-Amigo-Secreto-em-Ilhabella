@@ -23,30 +23,27 @@ let bolas = [];
 let animacaoGlobo = null;
 
 // ============================================
-// MAPA DE SORTEIO CRIPTOGRAFADO (SECRETO E OFICIAL)
+// MAPA DE SORTEIO CRIPTOGRAFADO (100% LIMPO E SECRETO)
 // ============================================
-// Todos os 9 nomes reais estão cifrados em 2 camadas Base64 com sufixo privado.
-// Ninguém consegue ler abrindo o código fonte!
+// Cada nome real foi sorteado em ciclo perfeito e codificado em Base64 simples.
 const mapaSorteioCriptografado = {
-  "Sara": "U1ZKRVJVTXhSVTBB",
-  "Efrain": "U1ZKRkpVVkRSRU1B",
-  "Rubens": "U1ZKRU1VRk1SRU1B",
-  "Isa": "U1ZKSlUwRkJTVTBB",
-  "Jean": "U1ZKSlUwRkZSRUpB",
-  "Kay": "U1ZKUlNWUkNSVTBB",
-  "Jhon": "U1ZKSlUwRlNSVU1B",
-  "Bruna": "U1ZKSlRVTkJSVTBB",
-  "Rennan": "U1ZKSlUwRkJTVTBB"
+  "Sara": "RWZyYWlu",
+  "Efrain": "SXNh",
+  "Isa": "SmVhbg==",
+  "Jean": "S2F5",
+  "Kay": "Smhvbg==",
+  "Jhon": "QnJ1bmE=",
+  "Bruna": "UmVubmFu",
+  "Rennan": "UnViZW5z",
+  "Rubens": "U2FyYQ=="
 };
 
-// Função para decifrar o amigo secreto no momento do acesso
+// Função para decifrar o nome do amigo secreto perfeitamente
 function decifrarAmigo(chaveCriptografada) {
   try {
-    const etapa1 = atob(chaveCriptografada);
-    const etapa2 = atob(etapa1);
-    return etapa2.replace(/_RCT2026/g, "");
+    return decodeURIComponent(escape(atob(chaveCriptografada)));
   } catch (e) {
-    console.error("Erro ao decifrar amigo secreto.");
+    console.error("Erro ao decifrar amigo secreto:", e);
     return "Erro no sorteio";
   }
 }
@@ -55,7 +52,6 @@ function decifrarAmigo(chaveCriptografada) {
 // INICIALIZAR SITE E REPRODUÇÃO DE ÁUDIO
 // ============================================
 
-// Toca a música no primeiro clique do usuário
 window.addEventListener("click", () => {
   const musica = document.getElementById("bg-music");
   if (musica && musica.paused) {
@@ -103,7 +99,6 @@ function entrar() {
     return;
   }
 
-  // Toca a música caso ainda não tenha iniciado
   const musica = document.getElementById("bg-music");
   if (musica && musica.paused) {
     musica.play().catch(err => console.log("Áudio bloqueado:", err));
@@ -113,11 +108,9 @@ function entrar() {
 
   document.getElementById("user-display-name").textContent = usuarioAtual;
 
-  // Decifra o amigo secreto de forma totalmente privada e secreta
   const codigoCriptografado = mapaSorteioCriptografado[usuarioAtual];
   amigoSorteado = decifrarAmigo(codigoCriptografado);
 
-  // Verifica se o usuário já assistiu à animação no seu próprio navegador
   const jaViu = localStorage.getItem(`visto_${usuarioAtual}`);
 
   if (jaViu) {
@@ -314,7 +307,6 @@ function rodarSequenciaCompleta(nomeSorteado) {
 
         dispararConfetes();
 
-        // Salva a visualização no histórico do dispositivo do usuário
         localStorage.setItem(`visto_${usuarioAtual}`, "true");
 
         setTimeout(() => {
