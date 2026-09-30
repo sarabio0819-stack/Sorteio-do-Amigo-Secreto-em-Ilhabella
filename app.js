@@ -268,3 +268,34 @@ function exibirTelaFinal(nomeSorteado) {
     console.log("Confetes indisponíveis:", e);
   }
 }
+
+// 6. REINICIAR / RESETAR SORTEIO DO ZERO
+async function reiniciarSorteio() {
+  const confirmacao = confirm("⚠️ Tem certeza que deseja apagar TODOS os sorteios e começar do ZERO?\nEsta ação não pode ser desfeita.");
+  
+  if (!confirmacao) return;
+
+  try {
+    // Limpa banco do Firebase (se configurado)
+    if (db) {
+      const snapshot = await db.collection("sorteios").get();
+      const batch = db.batch();
+      snapshot.docs.forEach(doc => {
+        batch.delete(doc.ref);
+      });
+      await batch.commit();
+    }
+
+    // Limpa os dados de teste salvos localmente
+    PARTICIPANTES.forEach(p => {
+      localStorage.removeItem("sorteio_" + p);
+    });
+
+    alert("✅ Sorteio reiniciado com sucesso! Todos os nomes foram liberados.");
+    window.location.reload();
+
+  } catch (e) {
+    console.error("Erro ao reiniciar:", e);
+    alert("Ocorreu um erro ao reiniciar. Verifique a conexão.");
+  }
+}
