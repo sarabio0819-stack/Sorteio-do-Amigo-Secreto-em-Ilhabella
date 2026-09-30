@@ -3,15 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Amigo Secreto da Equipe</title>
+  <title>Amigo Secreto - Roleta</title>
   <link rel="stylesheet" href="style.css" />
+  <!-- Biblioteca JS-Confetti para efeito de comemoração -->
+  <script src="https://cdn.jsdelivr.net/npm/js-confetti@latest/dist/js-confetti.browser.js"></script>
 </head>
 <body>
-  <div class="container">
-    <h1>🎄 Amigo Secreto</h1>
-
-    <!-- TELA DE LOGIN / SELEÇÃO DE NOME -->
+  <div class="main-container">
+    
+    <!-- TELA 1: LOGIN -->
     <div id="auth-card" class="card">
+      <h1>🎄 Amigo Secreto</h1>
       <h2>Acessar o Sorteio</h2>
       
       <label for="user-select">Quem é você?</label>
@@ -25,22 +27,28 @@
       <button onclick="entrar()">Entrar</button>
     </div>
 
-    <!-- TELA DA ROLETA / RESULTADO -->
-    <div id="app-card" class="card hidden">
+    <!-- TELA 2: ROLETA -->
+    <div id="wheel-card" class="card hidden">
       <h2>Olá, <span id="user-display-name"></span>! 👋</h2>
+      <p class="subtitle">Clique no botão para girar a roleta!</p>
 
-      <div id="roulette-container" class="roulette-box">
-        <p>Clique no botão para girar a roleta e descobrir seu amigo secreto:</p>
-        <div id="roulette-display" class="roulette-name">???</div>
+      <div class="wheel-wrapper">
+        <div class="pointer"></div>
+        <canvas id="wheel-canvas" width="340" height="340"></canvas>
       </div>
 
-      <button id="btn-girar" onclick="girarRoleta()" class="btn-spin">🎰 Girar Roleta</button>
-
-      <div id="result-area" class="result-box hidden">
-        <h3 id="result-title">Seu amigo secreto é:</h3>
-        <div id="drawn-name" class="final-name"></div>
-      </div>
+      <button id="btn-spin" onclick="girarRoleta()" class="btn-spin">🎰 Girar Roleta</button>
     </div>
+
+    <!-- TELA 3: REVELAÇÃO DO AMIGO SECRETO -->
+    <div id="result-card" class="card hidden result-card">
+      <div class="gift-icon">🎁</div>
+      <h2>Parabéns!</h2>
+      <p class="result-text">Seu amigo secreto é:</p>
+      <div id="drawn-name" class="drawn-name-box"></div>
+      <p class="secret-tip">🤫 Mantenha segredo até a entrega de presentes!</p>
+    </div>
+
   </div>
 
   <!-- Firebase SDKs -->
