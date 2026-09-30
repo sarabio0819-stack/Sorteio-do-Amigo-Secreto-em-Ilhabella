@@ -1,9 +1,9 @@
-// ========================================
-// CONFIGURAÇÃO DO FIREBASE
-// ========================================
+// ============================================
+// AMIGO SECRETO RCT 2026
+// ============================================
 
-// Substitua os valores abaixo pelos dados
-// reais do seu projeto Firebase.
+// CONFIGURAÇÃO DO FIREBASE
+// Substitua pelos dados reais do seu projeto.
 
 const firebaseConfig = {
   apiKey: "SEU_API_KEY",
@@ -14,23 +14,11 @@ const firebaseConfig = {
   appId: "SEU_APP_ID"
 };
 
-let db = null;
+// ============================================
+// CONFIGURAÇÕES DO SORTEIO
+// ============================================
 
-try {
-  if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-  }
-
-  db = firebase.firestore();
-
-} catch (error) {
-  console.error("Erro ao iniciar o Firebase:", error);
-}
-
-
-// ========================================
-// PARTICIPANTES
-// ========================================
+const SENHA = "velhadoecac";
 
 const participantes = [
   "Sara",
@@ -44,352 +32,297 @@ const participantes = [
   "Rennan"
 ];
 
-
-// ========================================
-// VARIÁVEIS
-// ========================================
-
+let db = null;
 let usuarioAtual = "";
 let amigoSorteado = "";
-
 let sorteioEmAndamento = false;
+let bolas = [];
+let animacaoGlobo = null;
 
-let bingoAnimationId = null;
-let balls = [];
+// ============================================
+// INICIALIZAR FIREBASE
+// ============================================
 
-window.amigoSorteado = "";
+try {
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
 
-const colors = [
-  "#ff7675",
-  "#74b9ff",
-  "#55efc4",
-  "#ffeaa7",
-  "#a29bfe",
-  "#fd79a8",
-  "#e17055",
-  "#00b894"
-];
+  db = firebase.firestore();
 
+  console.log("Firebase inicializado.");
 
-// ========================================
-// INICIALIZAÇÃO
-// ========================================
+} catch (erro) {
+  console.error("Erro ao inicializar Firebase:", erro);
+}
+
+// ============================================
+// INICIALIZAR SITE
+// ============================================
 
 window.addEventListener("DOMContentLoaded", () => {
-
   const select = document.getElementById("user-select");
 
-  participantes.forEach(nome => {
+  if (select) {
+    select.innerHTML =
+      '<option value="">Selecione seu nome</option>';
 
-    const option = document.createElement("option");
+    participantes.forEach(nome => {
+      const option = document.createElement("option");
 
-    option.value = nome;
-    option.textContent = nome;
+      option.value = nome;
+      option.textContent = nome;
 
-    select.appendChild(option);
+      select.appendChild(option);
+    });
+  }
 
-  });
-
-  initBingoCanvas();
-
+  iniciarGlobo();
 });
 
-
-// ========================================
+// ============================================
 // ENTRAR NO SITE
-// ========================================
+// ============================================
 
 async function entrar() {
-
   const select = document.getElementById("user-select");
-  const usuario = select.value;
+  const passwordInput = document.getElementById("password-input");
+  const btn = document.getElementById("btn-enter");
 
+  const usuario = select.value;
+  const senhaDigitada = passwordInput.value;
+
+  // Verificar nome
   if (!usuario) {
-    alert("Por favor, selecione o seu nome.");
+    alert("Por favor, selecione seu nome.");
+    return;
+  }
+
+  // VERIFICAR SENHA
+  if (senhaDigitada !== SENHA) {
+    alert("Senha incorreta! Tente novamente.");
+    passwordInput.value = "";
+    passwordInput.focus();
     return;
   }
 
   usuarioAtual = usuario;
 
-  document.getElementById("user-display-name").textContent = usuario;
+  document.getElementById("user-display-name").textContent =
+    usuarioAtual;
 
-  const enterBtn = document.getElementById("btn-enter");
+  btn.disabled = true;
+  btn.textContent = "Verificando...";
 
-  enterBtn.disabled = true;
+  // Verificar Firebase
+  if (!db) {
+    alert(
+      "O Firebase não foi inicializado. " +
+      "Confira as credenciais no arquivo app.js."
+    );
+
+    btn.disabled = false;
+    btn.textContent = "Entrar 🌊";
+    return;
+  }
 
   try {
-
-    if (!db) {
-      throw new Error("Firebase não configurado.");
-    }
-
-    const doc = await db
-      .collection("sorteios")
-      .doc(usuarioAtual)
-      .get();
+    const docRef = db.collection("sorteios").doc(usuarioAtual);
+    const doc = await docRef.get();
 
     if (doc.exists && doc.data().tirou) {
-
       amigoSorteado = doc.data().tirou;
-
       window.amigoSorteado = amigoSorteado;
 
       mostrarResultado(amigoSorteado);
-
     } else {
-
       mostrarGlobo();
-
     }
 
-  } catch (error) {
-
-    console.error("Erro ao consultar sorteio:", error);
+  } catch (erro) {
+    console.error("Erro ao consultar o Firebase:", erro);
 
     alert(
-      "Não foi possível consultar o sorteio. " +
-      "Confira a configuração e a conexão com o Firebase."
+      "Não foi possível consultar o sorteio.\n\n" +
+      "Verifique:\n" +
+      "1. As credenciais do Firebase.\n" +
+      "2. As regras do Firestore.\n" +
+      "3. A conexão com a internet."
     );
 
-    enterBtn.disabled = false;
-
+    btn.disabled = false;
+    btn.textContent = "Entrar 🌊";
   }
-
 }
 
-
-// ========================================
+// ============================================
 // MOSTRAR GLOBO
-// ========================================
+// ============================================
 
 function mostrarGlobo() {
+  document.getElementById("auth-card").classList.add("hidden");
 
-  document
-    .getElementById("auth-card")
-    .classList.add("hidden");
+  document.getElementById("result-card").classList.add("hidden");
 
-  document
-    .getElementById("result-card")
-    .classList.add("hidden");
-
-  document
-    .getElementById("wheel-card")
-    .classList.remove("hidden");
-
+  document.getElementById("wheel-card").classList.remove("hidden");
 }
 
-
-// ========================================
+// ============================================
 // MOSTRAR RESULTADO
-// ========================================
+// ============================================
 
 function mostrarResultado(nome) {
+  document.getElementById("auth-card").classList.add("hidden");
 
-  document
-    .getElementById("auth-card")
-    .classList.add("hidden");
+  document.getElementById("wheel-card").classList.add("hidden");
 
-  document
-    .getElementById("wheel-card")
-    .classList.add("hidden");
+  document.getElementById("result-card").classList.remove("hidden");
 
-  document
-    .getElementById("result-card")
-    .classList.remove("hidden");
-
-  document
-    .getElementById("drawn-name")
-    .textContent = nome;
-
+  document.getElementById("drawn-name").textContent = nome;
 }
 
+// ============================================
+// GLOBO COM BOLINHAS COLORIDAS
+// ============================================
 
-// ========================================
-// ANIMAÇÃO DAS BOLINHAS DO GLOBO
-// ========================================
-
-function initBingoCanvas() {
-
+function iniciarGlobo() {
   const canvas = document.getElementById("bingo-canvas");
 
   if (!canvas) return;
 
   const ctx = canvas.getContext("2d");
 
-  balls = [];
+  const cores = [
+    "#ff7675",
+    "#74b9ff",
+    "#55efc4",
+    "#ffeaa7",
+    "#a29bfe",
+    "#fd79a8",
+    "#e17055",
+    "#00b894"
+  ];
 
-  // Cria 18 bolinhas coloridas
+  bolas = [];
 
   for (let i = 0; i < 18; i++) {
-
-    balls.push({
-
-      x: 40 + Math.random() * 120,
-
-      y: 40 + Math.random() * 120,
-
-      radius: 10,
-
-      color: colors[i % colors.length],
-
+    bolas.push({
+      x: 35 + Math.random() * 130,
+      y: 35 + Math.random() * 130,
+      raio: 10,
+      cor: cores[i % cores.length],
       vx: (Math.random() - 0.5) * 3,
-
       vy: (Math.random() - 0.5) * 3
-
     });
-
   }
 
+  function desenhar() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // Desenha e movimenta as bolinhas
+    bolas.forEach(bola => {
+      bola.x += bola.vx;
+      bola.y += bola.vy;
 
-  function draw() {
+      const dx = bola.x - 100;
+      const dy = bola.y - 100;
+      const distancia = Math.sqrt(dx * dx + dy * dy);
 
-    ctx.clearRect(
-      0,
-      0,
-      canvas.width,
-      canvas.height
-    );
+      if (distancia + bola.raio > 94) {
+        const angulo = Math.atan2(dy, dx);
 
-    balls.forEach(ball => {
+        bola.vx = -Math.cos(angulo) * Math.abs(bola.vx);
+        bola.vy = -Math.sin(angulo) * Math.abs(bola.vy);
 
-      ball.x += ball.vx;
-      ball.y += ball.vy;
-
-      const dx = ball.x - 100;
-      const dy = ball.y - 100;
-
-      const distance = Math.sqrt(
-        dx * dx + dy * dy
-      );
-
-      // Mantém as bolinhas dentro do globo
-
-      if (distance + ball.radius > 94) {
-
-        const angle = Math.atan2(dy, dx);
-
-        ball.vx =
-          -Math.cos(angle) * Math.abs(ball.vx);
-
-        ball.vy =
-          -Math.sin(angle) * Math.abs(ball.vy);
-
-        ball.x =
-          100 + Math.cos(angle) * (94 - ball.radius);
-
-        ball.y =
-          100 + Math.sin(angle) * (94 - ball.radius);
-
+        bola.x = 100 + Math.cos(angulo) * (94 - bola.raio);
+        bola.y = 100 + Math.sin(angulo) * (94 - bola.raio);
       }
 
-
-      // Brilho das bolinhas
-
-      const gradient = ctx.createRadialGradient(
-        ball.x - 4,
-        ball.y - 5,
+      const gradiente = ctx.createRadialGradient(
+        bola.x - 4,
+        bola.y - 5,
         1,
-        ball.x,
-        ball.y,
-        ball.radius + 2
+        bola.x,
+        bola.y,
+        bola.raio + 2
       );
 
-      gradient.addColorStop(0, "#ffffff");
-      gradient.addColorStop(0.18, ball.color);
-      gradient.addColorStop(1, ball.color);
-
-
-      // Desenha a bolinha
+      gradiente.addColorStop(0, "#ffffff");
+      gradiente.addColorStop(0.2, bola.cor);
+      gradiente.addColorStop(1, bola.cor);
 
       ctx.beginPath();
-
       ctx.arc(
-        ball.x,
-        ball.y,
-        ball.radius,
+        bola.x,
+        bola.y,
+        bola.raio,
         0,
         Math.PI * 2
       );
 
-      ctx.fillStyle = gradient;
+      ctx.fillStyle = gradiente;
       ctx.fill();
 
       ctx.lineWidth = 1.5;
-      ctx.strokeStyle = "rgba(255,255,255,.9)";
+      ctx.strokeStyle = "rgba(255,255,255,0.9)";
       ctx.stroke();
-
     });
 
-    bingoAnimationId = requestAnimationFrame(draw);
-
+    animacaoGlobo = requestAnimationFrame(desenhar);
   }
 
-
-  if (bingoAnimationId) {
-    cancelAnimationFrame(bingoAnimationId);
+  if (animacaoGlobo) {
+    cancelAnimationFrame(animacaoGlobo);
   }
 
-  draw();
-
+  desenhar();
 }
 
-
-// ========================================
-// REALIZAR O SORTEIO
-// ========================================
+// ============================================
+// REALIZAR SORTEIO
+// ============================================
 
 async function sortearAmigo() {
-
   const possiveis = participantes.filter(
     nome => nome !== usuarioAtual
   );
 
-  if (!possiveis.length) {
-    throw new Error(
-      "Não há participantes disponíveis para o sorteio."
-    );
+  if (possiveis.length === 0) {
+    throw new Error("Não há participantes disponíveis.");
   }
 
-  const sorteado = possiveis[
-    Math.floor(Math.random() * possiveis.length)
-  ];
+  const sorteado =
+    possiveis[Math.floor(Math.random() * possiveis.length)];
 
   if (!db) {
-    throw new Error(
-      "Firebase não está configurado. O sorteio não foi salvo."
-    );
+    throw new Error("Firebase não está configurado.");
   }
 
-  await db
-    .collection("sorteios")
-    .doc(usuarioAtual)
-    .set({
+  // Verificar novamente se o participante já sorteou
+  const docRef = db.collection("sorteios").doc(usuarioAtual);
+  const documento = await docRef.get();
 
-      de: usuarioAtual,
+  if (documento.exists && documento.data().tirou) {
+    return documento.data().tirou;
+  }
 
-      tirou: sorteado,
-
-      data: new Date().toISOString()
-
-    });
+  // Salvar resultado
+  await docRef.set({
+    de: usuarioAtual,
+    tirou: sorteado,
+    data: new Date().toISOString()
+  });
 
   amigoSorteado = sorteado;
-
   window.amigoSorteado = sorteado;
 
   return sorteado;
-
 }
 
-
-// ========================================
-// INICIAR SORTEIO E ANIMAÇÃO
-// ========================================
+// ============================================
+// BOTÃO DE SORTEAR
+// ============================================
 
 async function executarSorteioEAnimacao() {
-
   if (sorteioEmAndamento) return;
 
   sorteioEmAndamento = true;
@@ -397,142 +330,98 @@ async function executarSorteioEAnimacao() {
   const btn = document.getElementById("btn-spin");
 
   btn.disabled = true;
+  btn.textContent = "Sorteando...";
 
   try {
+    const nome = await sortearAmigo();
 
-    const nomeFinal = await sortearAmigo();
+    rodarSequenciaCompleta(nome);
 
-    rodarSequenciaCompleta(nomeFinal);
-
-  } catch (error) {
-
-    console.error("Erro ao sortear:", error);
+  } catch (erro) {
+    console.error("Erro ao realizar sorteio:", erro);
 
     alert(
-      "Não foi possível salvar o sorteio. " +
-      "Verifique a conexão e a configuração do Firebase e tente novamente."
+      "Não foi possível realizar o sorteio.\n\n" +
+      "Confira as configurações do Firebase e tente novamente."
     );
 
     btn.disabled = false;
+    btn.textContent = "🎰 Sortear Amigo Secreto";
 
     sorteioEmAndamento = false;
-
   }
-
 }
 
-
-// ========================================
-// SEQUÊNCIA DA ANIMAÇÃO
-// ========================================
+// ============================================
+// ANIMAÇÃO COMPLETA
+// ============================================
 
 function rodarSequenciaCompleta(nomeSorteado) {
+  const globo = document.getElementById("globo");
+  const frase = document.getElementById("bingo-phrase");
+  const bolinha = document.getElementById("drawn-ball");
+  const nomeBolinha = document.getElementById("ball-name");
 
   const btn = document.getElementById("btn-spin");
 
-  const globo = document.getElementById("globo");
-
-  const phraseEl = document.getElementById("bingo-phrase");
-
-  const drawnBall = document.getElementById("drawn-ball");
-
-  const ballName = document.getElementById("ball-name");
-
-  const audio = document.getElementById("bg-music");
-
-
-  // Limpa a animação anterior
-
-  drawnBall.classList.remove(
+  bolinha.classList.remove(
     "drop-out",
     "shake-ball",
     "open-ball"
   );
 
-  ballName.textContent = "";
+  nomeBolinha.textContent = "";
 
+  // Música opcional
+  const musica = document.getElementById("bg-music");
 
-  // Inicia a música
-
-  if (audio) {
-
-    audio.currentTime = 0;
-
-    audio.play().catch(error => {
-      console.log("Áudio não iniciado:", error);
-    });
-
+  if (musica) {
+    musica.currentTime = 0;
+    musica.play().catch(() => {});
   }
 
-
-  // Aumenta a velocidade das bolinhas
-
-  balls.forEach(ball => {
-
-    ball.vx = (Math.random() - 0.5) * 10;
-
-    ball.vy = (Math.random() - 0.5) * 10;
-
+  // Aumentar a velocidade das bolinhas
+  bolas.forEach(bola => {
+    bola.vx = (Math.random() - 0.5) * 10;
+    bola.vy = (Math.random() - 0.5) * 10;
   });
 
-
   // ETAPA 1: GLOBO GIRANDO
-
   globo.classList.add("shaking");
-
-  phraseEl.textContent = "Agitando o globo...";
-
-
-  // ETAPA 2: BOLINHA SAINDO
+  frase.textContent = "Agitando o globo...";
 
   setTimeout(() => {
-
+    // ETAPA 2: BOLINHA SAI
     globo.classList.remove("shaking");
 
-    phraseEl.textContent = "A bolinha está saindo!";
+    frase.textContent = "A bolinha está saindo!";
 
-    drawnBall.classList.add("drop-out");
-
-
-    // ETAPA 3: BOLINHA CHACOALHANDO
+    bolinha.classList.add("drop-out");
 
     setTimeout(() => {
+      // ETAPA 3: BOLINHA CHACOALHA
+      bolinha.classList.add("shake-ball");
 
-      drawnBall.classList.add("shake-ball");
-
-      phraseEl.textContent =
-        "O que será que tem aqui?";
-
-
-      // ETAPA 4: BOLINHA SE ABRINDO
+      frase.textContent = "O que será que tem aqui?";
 
       setTimeout(() => {
+        // ETAPA 4: BOLINHA ABRE
+        bolinha.classList.remove("shake-ball");
+        bolinha.classList.add("open-ball");
 
-        drawnBall.classList.remove("shake-ball");
+        nomeBolinha.textContent = nomeSorteado;
 
-        drawnBall.classList.add("open-ball");
+        frase.textContent = "SURPRESA!";
 
-        ballName.textContent = nomeSorteado;
-
-        phraseEl.textContent = "SURPRESA!";
-
-
-        // ETAPA 5: EXPLOSÃO DE CONFETES
-
+        // ETAPA 5: CONFETES
         dispararConfetes();
 
-
-        // ETAPA 6: TELA FINAL
-
         setTimeout(() => {
-
+          // ETAPA 6: RESULTADO
           mostrarResultado(nomeSorteado);
 
           sorteioEmAndamento = false;
-
-          if (btn) {
-            btn.disabled = true;
-          }
+          btn.disabled = true;
 
         }, 2000);
 
@@ -541,152 +430,108 @@ function rodarSequenciaCompleta(nomeSorteado) {
     }, 1000);
 
   }, 2500);
-
 }
 
-
-// ========================================
+// ============================================
 // EXPLOSÃO DE CONFETES
-// ========================================
+// ============================================
 
 function dispararConfetes() {
-
   if (typeof confetti !== "function") return;
 
-
-  // EXPLOSÃO CENTRAL
-
+  // Explosão central
   confetti({
-
     particleCount: 180,
-
     spread: 100,
-
     startVelocity: 45,
-
     origin: {
       x: 0.5,
       y: 0.5
     },
-
     gravity: 0.9,
-
     ticks: 250,
-
     scalar: 1.15
-
   });
 
-
-  // CONFETES À ESQUERDA
-
+  // Confetes à esquerda
   setTimeout(() => {
-
     confetti({
-
       particleCount: 70,
-
       angle: 60,
-
       spread: 70,
-
       origin: {
         x: 0,
         y: 0.65
       }
-
     });
-
   }, 150);
 
-
-  // CONFETES À DIREITA
-
+  // Confetes à direita
   setTimeout(() => {
-
     confetti({
-
       particleCount: 70,
-
       angle: 120,
-
       spread: 70,
-
       origin: {
         x: 1,
         y: 0.65
       }
-
     });
-
   }, 300);
-
 }
 
-
-// ========================================
+// ============================================
 // RESETAR SORTEIO
-// ========================================
+// ============================================
 
 async function reiniciarSorteio() {
+  const senha = prompt("Senha do organizador:");
 
-  const pass = prompt(
-    "Palavra-passe do organizador:"
-  );
+  if (senha === null) return;
 
-
-  // Senha demonstrativa
-  // Não é uma proteção segura para produção.
-
-  if (pass !== "admin123") {
-
-    if (pass !== null) {
-      alert("Palavra-passe incorreta!");
-    }
-
+  if (senha !== SENHA) {
+    alert("Senha incorreta!");
     return;
-
   }
-
 
   if (!db) {
-
-    alert(
-      "Firebase não está configurado. Não foi possível resetar."
-    );
-
+    alert("Firebase não está configurado.");
     return;
-
   }
 
+  const confirmar = confirm(
+    "Tem certeza de que deseja apagar todos os sorteios?"
+  );
+
+  if (!confirmar) return;
 
   try {
+    const snapshot = await db.collection("sorteios").get();
 
-    const snapshot = await db
-      .collection("sorteios")
-      .get();
+    // O Firestore permite até 500 operações por lote.
+    // Esta implementação divide a exclusão em lotes.
+    const documentos = snapshot.docs;
 
-    const batch = db.batch();
+    for (let i = 0; i < documentos.length; i += 500) {
+      const batch = db.batch();
 
-    snapshot.docs.forEach(doc => {
-      batch.delete(doc.ref);
-    });
+      documentos.slice(i, i + 500).forEach(doc => {
+        batch.delete(doc.ref);
+      });
 
-    await batch.commit();
+      await batch.commit();
+    }
 
     alert("Sorteio resetado com sucesso!");
 
     location.reload();
 
-  } catch (error) {
-
-    console.error("Erro ao resetar:", error);
+  } catch (erro) {
+    console.error("Erro ao resetar sorteio:", erro);
 
     alert(
       "Não foi possível resetar o sorteio. " +
-      "Confira a conexão e as permissões do Firebase."
+      "Verifique as permissões do Firebase."
     );
-
   }
-
 }
