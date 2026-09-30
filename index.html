@@ -180,7 +180,7 @@
       100% { opacity: 1; }
     }
 
-    /* BOLINHA SORTEADA (SAÍDA DA MÁQUINA) */
+    /* BOLINHA SORTEADA */
     .winning-ball {
       position: absolute;
       width: 60px;
@@ -254,7 +254,7 @@
       </button>
     </div>
 
-    <!-- TELA 2: MÁQUINA DE BINGO (SORTEIO) -->
+    <!-- TELA 2: MÁQUINA DE BINGO -->
     <div id="wheel-card" class="card hidden">
       <h2>Olá, <span id="user-display-name"></span>! 👋</h2>
       <p class="subtitle">Clique no botão para sortear seu amigo secreto!</p>
@@ -283,7 +283,6 @@
 
   <audio id="bg-music" loop preload="auto" src="havaiana.mp3"></audio>
 
-  <!-- Script da Animação da Máquina de Bingo -->
   <script>
     const jsConfetti = new JSConfetti();
     let bingoAnimationId = null;
@@ -292,6 +291,7 @@
 
     function initBingoCanvas() {
       const canvas = document.getElementById('bingo-canvas');
+      if (!canvas) return;
       const ctx = canvas.getContext('2d');
       balls = [];
       
@@ -316,7 +316,6 @@
           b.x += b.vx;
           b.y += b.vy;
 
-          // Colisão circular simples
           const dx = b.x - centerX;
           const dy = b.y - centerY;
           const dist = Math.sqrt(dx * dx + dy * dy);
@@ -346,17 +345,20 @@
       draw();
     }
 
-    // Função responsável pela animação dos 5 segundos
     function iniciarEfeitoBingo(nomeSorteado) {
       const btn = document.getElementById('btn-spin');
       const sphere = document.getElementById('bingo-sphere');
       const phraseEl = document.getElementById('bingo-phrase');
       const winningBall = document.getElementById('winning-ball');
-      
-      btn.disabled = true;
-      sphere.classList.add('shaking');
+      const audio = document.getElementById('bg-music');
 
-      // Aumentar velocidade das bolinhas
+      if (audio) {
+        audio.play().catch(e => console.log("Áudio aguardando ação..."));
+      }
+
+      if (btn) btn.disabled = true;
+      if (sphere) sphere.classList.add('shaking');
+
       balls.forEach(b => {
         b.vx *= 3;
         b.vy *= 3;
@@ -369,35 +371,30 @@
       ];
 
       let idx = 0;
-      phraseEl.innerText = frases[0];
+      if (phraseEl) phraseEl.innerText = frases[0];
       const intervalFrases = setInterval(() => {
         idx = (idx + 1) % frases.length;
-        phraseEl.innerText = frases[idx];
+        if (phraseEl) phraseEl.innerText = frases[idx];
       }, 1500);
 
-      // Duração da mistura: 5 Segundos
       setTimeout(() => {
         clearInterval(intervalFrases);
-        sphere.classList.remove('shaking');
-        phraseEl.innerText = "Saindo a bolinha premiada!";
+        if (sphere) sphere.classList.remove('shaking');
+        if (phraseEl) phraseEl.innerText = "Saindo a bolinha premiada!";
 
-        // Travar movimento suave das bolinhas
         balls.forEach(b => {
           b.vx *= 0.1;
           b.vy *= 0.1;
         });
 
-        // Ejeção da Bolinha
         setTimeout(() => {
-          winningBall.classList.add('eject');
+          if (winningBall) winningBall.classList.add('eject');
           
-          // Revelar Nome após pequena pausa
           setTimeout(() => {
             document.getElementById('wheel-card').classList.add('hidden');
             document.getElementById('result-card').classList.remove('hidden');
             document.getElementById('drawn-name').innerText = nomeSorteado;
 
-            // Lançar Confetes
             jsConfetti.addConfetti({
               emojis: ['🎉', '🎁', '✨', '⭐'],
               confettiRadius: 6,
@@ -410,21 +407,16 @@
       }, 5000);
     }
 
-    // Integração com a função de sorteio existente do seu app.js
     function executarAnimacaoBingo() {
-      // Caso a função girarRoleta ou obterSorteio exista no app.js, nós a chamamos
       if (typeof girarRoleta === 'function') {
-        // Se a sua função girarRoleta já obtém o nome sorteado:
         girarRoleta();
       } else if (window.amigoSorteado) {
         iniciarEfeitoBingo(window.amigoSorteado);
       } else {
-        // Exemplo genérico de segurança para testes
         iniciarEfeitoBingo("Amigo Sorteado");
       }
     }
 
-    // Inicializa o Canvas assim que a janela carrega
     window.addEventListener('load', () => {
       initBingoCanvas();
     });
