@@ -478,7 +478,7 @@ canvas {
 
   padding: 5px;
 
-  color: #fff;
+  color: #000;
   font-size: 12px;
   font-weight: 800;
   text-align: center;
@@ -521,7 +521,7 @@ canvas {
     #2b6777
   );
 
-  color: #000;
+  color: #fff;
   font-size: 27px;
   font-weight: 800;
   letter-spacing: 1px;
